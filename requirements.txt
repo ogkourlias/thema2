@@ -1,0 +1,3 @@
+ffmpy==0.2.1
+moviepy==0.2.2.11
+Vapory==0.1.1
