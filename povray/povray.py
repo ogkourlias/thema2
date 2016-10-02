@@ -1,21 +1,22 @@
 from povray.settings import *
 from tempfile import mkdtemp
 from glob import glob
-from povray import settings
 import os
 
-def make_frame(t, scene, i=None, time=True):
+def make_frame(t, scene, time, i=None):
     ''' Runs Povray through the vapory library for the frame at time t '''
-    # Define file name to store current frame in
     ## TODO: create temporary location for image storage if creating a movie
+    # If no frame number is given, use time t
     if not i:
         i = t
+    # Define file name to store current frame in
     frame_file = '{}/{}/{}_{}.png'.format(file_dir, imagefile_dir,
-                                         outfile_prefix, str(i).zfill(3))
+                                          outfile_prefix, str(i).zfill(3))
     
-    # Run Povray
-    if not time:
+    # If t does not represent a timepoint, use i instead
+    if time:
         t = i
+    # Run Povray
     scene(t).render(frame_file, width=iwidth, height=iheight,
                     antialiasing=antialias, quality=quality, remove_temp=True)
 
@@ -35,9 +36,9 @@ def render_scene(scene, time):
     remove_folder_contents("images/")
 
     # Pre-build scene times, one per frame
-    t = [i*ftime for i in range(settings.duration * settings.sfps)]
+    t = [i * ftime for i in range(duration * sfps)]
     for i, frame in enumerate(t):
-        make_frame(frame, scene, i+1, time)
+        make_frame(frame, scene, time, i+1)
 
 def render_scene_to_gif(scene, render_mp4=False, time=True):
     ''' Creates a GIF output 'movie' given the PNG renders
@@ -50,7 +51,7 @@ def render_scene_to_gif(scene, render_mp4=False, time=True):
 
     # Combine images into GIF file using moviepy
     f = glob('{}/{}_*.png'.format(imagefile_dir, outfile_prefix))
-    ImageSequenceClip(f, fps=settings.sfps).write_gif('{}.gif'.format(outfile_prefix))
+    ImageSequenceClip(f, fps=sfps).write_gif('{}.gif'.format(outfile_prefix))
 
 def render_scene_to_mp4(scene, render_gif=False, time=True):
     ''' Creates a high-quality MP4 movie using 'ffmpeg' '''

@@ -5,7 +5,7 @@ To install the requirements (moviepy, ffmpy and vapory), use:
     pip install -r requirements.txt
 '''
 
-from math import sin, cos, pi, sqrt, pow
+from math import sin, cos, pi, sqrt
 from vapory import *
 from povray import povray
 import argparse
@@ -15,7 +15,6 @@ import sys
 radius    = 10     # scene circle radius
 xcenter   = 0
 zcenter   = 0
-steps     = 200    # number of steps in a circle
 ## Scene Settings and Static Objects
 main_light = LightSource([2, 4, -3], 3,  'fade_distance', 5,
                          'fade_power', 2, 'area_light', 3, 3, 12, 12,
@@ -36,7 +35,8 @@ def _get_xz(step, steps):
     return (x,z)
 
 def sphere_circle():
-    spheres = 20 # number of spheres to create
+    spheres = 20  # number of spheres to create
+    steps   = 200 # number of steps in a circle
     ring = []
     ring_node_size = 0.6
     smodel = Texture(Pigment('color', [1, 0, 0], 'filter', 0.5), 
@@ -52,7 +52,7 @@ ring = sphere_circle()
 
 def scene(t):
     """ Returns the scene at time 't' (in seconds) """
-    x, z = _get_xz(t, steps)
+    x, z = _get_xz(t, povray.duration)
 
     ## Rotating sphere
     sphere_rad = 1.8
@@ -61,15 +61,13 @@ def scene(t):
                     Pigment('color', [0.9, 0.05, 0.05], 'filter', 0.7),
                     Interior('ior',1), Finish('phong', 0.6, 'reflection', 0.4))
 
-    ## Intersecting cylinder
+    ## Intersecting cylinder slope
     t_slope  = 0 if x == 0 else (zcenter - z) / (xcenter - x) 
     inv_slope = 0 if t_slope == 0 else -(1 / t_slope)
 
     # Calculate x and y of cylinder end-points given length of side c (right triangle)
     c = sphere_rad
     # Length of sides a and b of the triangle
-    # See: http://math.stackexchange.com/questions/566029/in-a-right-triangle-given-
-    #      slope-and-length-of-hypotenuse-find-length-of-legs
     b = c / sqrt(inv_slope**2 + 1)
     a = sqrt(abs(c**2 - b**2))
 
@@ -90,6 +88,23 @@ def scene(t):
                  objects=[ground, main_light, back_light, Difference(sphere, rod)] + ring,
                  included=["glass.inc", "colors.inc", "textures.inc"])
 
+def main(args):
+    ''' Runs the simulation '''
+    if args.time:
+        # User entered the specific timepoint to render (in seconds)
+        povray.make_frame(args.time, scene, time=True)
+    else:
+        # No output file type and no specific time, exit
+        if not args.gif and not args.mp4:
+            parser.print_help()
+            sys.exit('\nPlease specify either a specific time point or output format for a movie file')
+        # Render a movie, depending on output type selected (both files is possible)
+        if args.gif:
+            povray.render_scene_to_gif(scene, args.mp4, time=False)
+        if args.mp4:
+            povray.render_scene_to_mp4(scene, args.gif, time=False)
+    return 0
+    
 if __name__ == 'vapory':
     parser = argparse.ArgumentParser(description='Create a rendered movie using Povray')
     parser.add_argument('--time', type=float, 
@@ -100,17 +115,4 @@ if __name__ == 'vapory':
                         help='Create a high-quality MP4 output file using ffmpeg')
 
     args = parser.parse_args()
-
-    if args.time:
-        # User entered the specific timepoint to render (in seconds)
-        povray.make_frame(args.time, scene)
-    else:
-        # No output file type and no specific time, exit
-        if not args.gif and not args.mp4:
-            parser.print_help()
-            sys.exit('\nPlease specify either a specific time point or output format for a movie file')
-        # Render a movie, depending on output type selected (both files is possible)
-        if args.gif:
-            povray.render_scene_gif(scene, args.mp4)
-        if args.mp4:
-            povray.render_scene_to_mp4(scene, args.gif)
+    sys.exit(main(args))

@@ -10,12 +10,12 @@ imagefile_dir  = 'images'
 ## Output settings
 iwidth                      = 480
 iheight                     = 320
-quality                     = 6
-antialias                   = 0.1
-duration                    = 6                             # total time for the animation
+quality                     = 6                             # Povray quality setting ((min) 0-10 (max))
+antialias                   = 0.1                           # Povray anti-aliasing (lower is better quality)
+duration                    = 6                             # total runtime of the animation
 ## Render Settings
 sfps                        = 15                            # rendered scene frames per second
-ftime                       = duration/(duration*sfps)      # time per frame  in seconds
+ftime                       = duration/(duration*sfps)      # time per frame in seconds
 
 ## Static Object and Model Library
 default_light        = LightSource([2, 4, -3], 1)
