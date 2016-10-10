@@ -18,7 +18,7 @@ def make_frame(t, scene, time, i=None):
         t = i
     # Run Povray
     scene(t).render(frame_file, width=iwidth, height=iheight,
-                    antialiasing=antialias, quality=quality, remove_temp=True)
+                    antialiasing=antialias, quality=quality, remove_temp=False)
 
 def remove_folder_contents(folder):
     '''Cleans up folder contents'''

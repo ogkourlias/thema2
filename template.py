@@ -13,6 +13,7 @@ from vapory import Sphere, Scene
 
 def scene(step):
     ''' Returns the scene at step number (1 step per frame) '''
+    print('@ step ', step)
     frames = povray.sfps * povray.duration
 
     # Calculate distance to move at each step
@@ -35,4 +36,4 @@ def scene(step):
 
 if __name__ == '__main__':
     # Render as an MP4 movie
-    povray.render_scene_to_gif(scene, time=False)
+    povray.render_scene_to_mp4(scene, time=True)
