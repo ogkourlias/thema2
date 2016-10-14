@@ -1,22 +1,5 @@
 from vapory import *
 
-## Input/ output location
-file_dir       = '/Users/marcelk/Dropbox/Hanze/Thema02/povray'
-## Output movie prefix
-outfile_prefix = 'simulation'
-imagefile_dir  = 'images'
-
-#########################POVRAY#######################
-## Output settings
-iwidth                      = 1024
-iheight                     = 768
-quality                     = 7                             # Povray quality setting ((min) 0-10 (max))
-antialias                   = 0.01                          # Povray anti-aliasing (lower is better quality)
-duration                    = 6                             # total runtime of the animation
-## Render Settings
-sfps                        = 10                            # rendered scene frames per second
-ftime                       = duration/(duration*sfps)      # time per frame in seconds
-
 ## Static Object and Model Library
 default_light        = LightSource([2, 4, -3], 1.5)
 default_camera       = Camera('location', [0, 14, -28], 'look_at', [0, 0, -3])

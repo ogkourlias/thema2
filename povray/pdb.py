@@ -13,6 +13,7 @@ class PDBMolecule(object):
     def __init__(self, pdb_file, center=True, offset=[0,0,0]):
         ''' Parses and renders the molecule given a PDB file '''
         self._parse_pdb(pdb_file)
+        self.molecule = pdb_file
         self.offset = np.array(offset)
         if np.count_nonzero(self.offset) > 0:
             self._recenter_molecule()
@@ -82,6 +83,27 @@ class PDBMolecule(object):
         if len(axis.nonzero()) == 0: # move on single axis
             ## TODO
             pass
+
+    def __repr__(self):
+        pass
+
+    def __str__(self):
+        ''' Provides an overview of the molecule
+            For each atom the index in the self.atoms list, its name and 
+            current coordinates are shown. '''
+        curr_center = np.around(self._center_of_mass(), 2)
+        header = ('\nOverview for the molecule read from {}\n'.format(self.molecule) +
+                  '=' * 54 + '\nIdx\t\tAtom\t\tx\ty\tz\n')
+        footer = ('=' * 54 +
+                  '\nMolecule is currently centered at {}'.format(curr_center))
+
+        structure = []
+        for idx, atm in enumerate(self.atoms):
+            structure.append('{}:\t\t{}\t\t{}\t{}\t{}\t'.format(idx, atm.name,
+                                                                format(atm.x, '.2f'),
+                                                                format(atm.y, '.2f'),
+                                                                format(atm.z, '.2f')))
+        return '{}{}\n{}\n'.format(header, '\n'.join(structure), footer)
 
     def rotate(self, axis, theta):
         ''' Rotates the molecule around a given axis with angle theta (radians) '''

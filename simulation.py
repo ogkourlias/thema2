@@ -7,7 +7,7 @@ To install the requirements (moviepy, ffmpy and vapory), use:
 
 from math import sin, cos, pi, sqrt
 from vapory import *
-from povray import povray
+from povray import povray, SETTINGS
 import argparse
 import sys
 
@@ -35,6 +35,8 @@ def _get_xz(step, steps):
     return (x,z)
 
 def sphere_circle():
+    ''' Creates a circle made up of 20 small spheres. 
+        A list of Sphere objects is returnded ready for rendering. '''
     spheres = 20  # number of spheres to create
     steps   = 200 # number of steps in a circle
     ring = []
@@ -52,7 +54,7 @@ ring = sphere_circle()
 
 def scene(t):
     """ Returns the scene at time 't' (in seconds) """
-    x, z = _get_xz(t, povray.duration)
+    x, z = _get_xz(t, SETTINGS.Duration)
 
     ## Rotating sphere
     sphere_rad = 1.8
@@ -84,8 +86,11 @@ def scene(t):
                    1.0, 'open', Pigment('color', [1, 0, 0], 'filter', 0.8),
                    Interior('ior',1), Finish('phong', 0, 'reflection', 0))
 
+    # 'Hollow out' the rotating sphere with the intersecting cylinder using the Difference
+    traveller = Difference(sphere, rod)
+
     return Scene(camera,
-                 objects=[ground, main_light, back_light, Difference(sphere, rod)] + ring,
+                 objects=[ground, main_light, back_light, traveller] + ring,
                  included=["glass.inc", "colors.inc", "textures.inc"])
 
 def main(args):

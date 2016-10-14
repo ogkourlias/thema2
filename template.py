@@ -8,13 +8,13 @@ __author__  = "Marcel Kempenaar"
 __status__  = "Template"
 __version__ = "2016.1"
 
-from povray import povray
+from povray import povray, SETTINGS
 from vapory import Sphere, Scene
 
 def scene(step):
     ''' Returns the scene at step number (1 step per frame) '''
     print('@ step ', step)
-    frames = povray.sfps * povray.duration
+    frames = SETTINGS.RenderFPS * SETTINGS.Duration
 
     # Calculate distance to move at each step
     distance_per_frame = (20 / frames) * 2
