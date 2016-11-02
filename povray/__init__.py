@@ -7,5 +7,4 @@ DEFAULT_CONFIG = 'default.ini'
 SETTINGS = config.Config(DEFAULT_CONFIG)
 
 def load_config(config_file):
-    global SETTINGS
-    SETTINGS = config.Config(config_file)
+    return config.Config(config_file)

@@ -3,13 +3,18 @@ from glob import glob
 from povray import SETTINGS
 from povray.models import *
 import configparser
+import distutils
+import shutil
 import os
 
+# Python multiprocessing using extended pickle serialization with
+# dill: https://github.com/uqfoundation/dill
+# and pathos: https://github.com/uqfoundation/pathos
+
+from pathos.multiprocessing import ProcessingPool as Pool
 
 def make_frame(t, scene, time, i=None):
     ''' Runs Povray through the vapory library for the frame at time t '''
-    ## TODO: create temporary location for image storage if creating a movie
-
     # If no frame number is given, use time t
     if not i:
         i = t
@@ -17,10 +22,14 @@ def make_frame(t, scene, time, i=None):
     # Define file name to store current frame in
     frame_file = '{}/{}_{}.png'.format(SETTINGS.OutputImageDir,
                                           SETTINGS.OutputPrefix, str(i).zfill(3))
-    
+
     # If t does not represent a timepoint, use i instead
-    if time:
+    if not time:
         t = i
+
+    # Change working directory to temp location, one for each 'worker' in the Pool                                                
+    tmp_folder = mkdtemp()
+    os.chdir(tmp_folder)
 
     # Run Povray
     scene(t).render(frame_file,
@@ -28,6 +37,9 @@ def make_frame(t, scene, time, i=None):
                     height=SETTINGS.ImageHeight,
                     antialiasing=SETTINGS.AntiAlias,
                     quality=SETTINGS.Quality, remove_temp=False)
+
+    # Remove temp folder
+    shutil.rmtree(tmp_folder)
 
 def _remove_folder_contents(folder):
     '''Cleans up folder contents'''
@@ -43,15 +55,27 @@ def _render_scene(scene, time):
     ''' Renders the scenes to output PNG files '''
     # Clear 'images' folder containing previously rendered frames
     _remove_folder_contents("images/")
-    
+
     # Calculate the time per frame (i.e. evaluate expression from config file)
     ftime = eval(SETTINGS.FrameTime)
     # Pre-build scene times, one per frame
-    timepoints = [i * ftime for i in range(int(SETTINGS.Duration) * int(SETTINGS.RenderFPS))]
-    
-    # Render each scene
-    for i, frame in enumerate(timepoints):
-        make_frame(frame, scene, time, i+1)
+    timepoints = [i * ftime for i in range(int(SETTINGS.Duration * SETTINGS.RenderFPS))]
+
+    if distutils.util.strtobool(SETTINGS.UsePool):
+      # TODO: map the objects in a more efficient way to the make_frame method
+      scene_flist = [scene for i in range(len(timepoints))]
+      time_list = [time for i in range(len(timepoints))]
+      i_list = [i+1 for i in range(len(timepoints))]
+
+      # Render each scene, using a thread pool
+      with Pool(int(SETTINGS.workers)) as p:
+        # All arguments except the first must have the same length
+        p.map(make_frame, timepoints, scene_flist, time_list, i_list)
+
+    else:
+      # Render each scene using single thread
+      for i, frame in enumerate(timepoints):
+          make_frame(frame, scene, time, i+1)
 
 def render_scene_to_gif(scene, render_mp4=False, time=True):
     ''' Creates a GIF output 'movie' given the PNG renders

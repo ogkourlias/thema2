@@ -15,6 +15,14 @@ class Config(object):
         value = [self.config[section].get(key) 
                  for section in self.config.sections() 
                  if self.config[section].get(key)]
+
+        # Check if its a boolean
+        if value == "True":
+            return True
+        elif value == "False":
+            return False
+
+        # Else, if it is a value
         try:
             value = float(value[0])
         except ValueError:

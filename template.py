@@ -13,7 +13,6 @@ from vapory import Sphere, Scene
 
 def scene(step):
     ''' Returns the scene at step number (1 step per frame) '''
-    print('@ step ', step)
     frames = SETTINGS.RenderFPS * SETTINGS.Duration
 
     # Calculate distance to move at each step

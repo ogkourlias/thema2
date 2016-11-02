@@ -1,5 +1,5 @@
 from vapory import Sphere, Scene, Pigment, Texture, Finish
-from povray import povray
+from povray import povray, SETTINGS
 from scipy.linalg import expm3, norm
 import numpy as np
 import sys
@@ -57,7 +57,7 @@ class PDBMolecule(object):
         self.povray_molecule = [self._get_atom(a, offset) for a in self.atoms]
 
     def _center_of_mass(self):
-        # Assumes equal weights, not the true center of mass
+        # Assumes equal weights, *not* the true center of mass
         x,y,z = 0, 0, 0
         for atom in self.atoms:
             x += atom.x
@@ -77,12 +77,90 @@ class PDBMolecule(object):
         ''' Set render specific options for the atoms (i.e. reflection) '''
         self.model = model
 
-    def move_offset(self, axis, v):
-        ''' Move the molecule on the given axis by vector v '''
-        # For each given axis, update the value with the axis-specific value from v
-        if len(axis.nonzero()) == 0: # move on single axis
-            ## TODO
-            pass
+    def move_offset(self, axes, v):
+        ''' Move the molecule - and thus each individual atom - on the given axes by vector v '''
+        coords = np.array([0, 0, 0])
+        if len(v) == 1:
+            try:
+                # Move on a single axis
+                coords[np.nonzero(axes)] = v
+                for atom in self.atoms:
+                    atom.x += coords[0]
+                    atom.y += coords[1]
+                    atom.z += coords[2]
+            except IndexError:
+                pass
+        else:
+            # Move on multiple axes
+            for atom in self.atoms:
+                atom.x += axes[0] * v[0]
+                atom.y += axes[1] * v[1]
+                atom.z += axes[2] * v[2]
+
+    def move_to(self, pos):
+        ''' Move the center of the molecule to the position pos '''
+        # Calculate the offset to move each atom with
+        offset = np.array(pos) - self.center
+
+        # Move each atom
+        for atom in self.atoms:
+            atom.x += offset[0]
+            atom.y += offset[1]
+            atom.z += offset[2]
+
+        # Calculate the new center of mass
+        self.center = self._center_of_mass()
+
+        # Regenerate the molecule
+        self.render_molecule()
+
+    def rotate(self, axis, theta):
+        ''' Rotates the molecule around a given axis with angle theta (radians) '''
+        for atom in self.atoms:
+            # subtract center
+            coords = np.array([atom.x, atom.y, atom.z]) - self.center
+            rcoords = np.array(self._calc_rotate(axis, theta, coords))
+            # update coordinates
+            atom.x, atom.y, atom.z = rcoords + self.center
+        # Regenerate the molecule
+        self.render_molecule()
+
+    def rotate_by_step(self, axis, theta, step, time=True):
+        ''' Rotates the molecule around a given axis with angle theta (radians) 
+            but always resets the molecule to its original rotation first which
+            makes it usable in a multi-threaded environment. '''
+
+        # If step is in seconds, divide by the FrameTime to get the integer (actual) step
+        if time:
+            step = int(step/eval(SETTINGS.FrameTime))
+
+        for atom in self.atoms:
+            # subtract center
+            coords = np.array([atom.x, atom.y, atom.z]) - self.center
+
+            # Reset the coordinates 
+            reset = np.array(self._calc_rotate(axis, -(theta*(step)), coords))
+            atom.x, atom.y, atom.z = reset
+
+            # Calculate rotation coordinates
+            rcoords = np.array(self._calc_rotate(axis, theta*(step+1), coords))
+
+            # update coordinates
+            atom.x, atom.y, atom.z = rcoords + self.center
+
+        # Regenerate the molecule
+        self.render_molecule()
+        
+    def _calc_rotate(self, axis, theta, v):
+        ''' Calculates the new coordinates for a rotation
+            axis:  vector, axis to rotate around
+            theta: rotation in radians
+            v:     vector, original object coordinates
+        '''
+        # Compute the matrix exponential using Taylor series
+        M0 = expm3(np.cross(np.eye(3), axis/norm(axis)*theta))
+        # Multiply the rotation matrix with the 
+        return np.dot(M0, v)
 
     def __repr__(self):
         pass
@@ -104,29 +182,6 @@ class PDBMolecule(object):
                                                                 format(atm.y, '.2f'),
                                                                 format(atm.z, '.2f')))
         return '{}{}\n{}\n'.format(header, '\n'.join(structure), footer)
-
-    def rotate(self, axis, theta):
-        ''' Rotates the molecule around a given axis with angle theta (radians) '''
-        for a in self.atoms:
-            # subtract center
-            coords = np.array([a.x, a.y, a.z]) - self.center
-            rcoords = np.array(self._calc_rotate(axis, theta, coords))
-            # update coordinates
-            a.x, a.y, a.z = rcoords + self.center
-        # Regenerate the molecule
-        self.render_molecule()
-
-    def _calc_rotate(self, axis, theta, v):
-        ''' Calculates the new coordinates for a rotation
-            axis:  vector, axis to rotate around
-            theta: rotation in radians
-            v:     vector, original object coordinates
-        '''
-        # Compute the matrix exponential using Taylor series
-        M0 = expm3(np.cross(np.eye(3), axis/norm(axis)*theta))
-        # Multiply the rotation matrix with the 
-        return np.dot(M0, v)
-
 
 class PDBAtom(object):
     ''' Simple class to parse a single ATOM to retrieve x, y and z coordinates'''
