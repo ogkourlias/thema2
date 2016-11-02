@@ -3,3 +3,9 @@ moviepy==0.2.2.11
 Vapory==0.1.1
 numpy==1.10.1
 scipy==0.18.0
+# Python multiprocessing using extended pickle serialization with
+# dill: https://github.com/uqfoundation/dill
+# and pathos: https://github.com/uqfoundation/pathos
+multiprocess==0.70.4
+dill==0.2.6.dev0
+pathos==0.2.1.dev0
