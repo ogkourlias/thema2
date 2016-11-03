@@ -1,5 +1,15 @@
 # A template project demonstrating the use of the Povray raytracer
 
+## Manuals
+
+* ###[povray_basic.ipynb](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/povray_simulation/raw/master/manual/povray_basic.ipynb)
+
+    **Basic Povray Simulation Example**  
+      
+    This document describes the most basic usage of the **povray_simulation** Python package that is provided for this course. This library is used to render (*draw*) objects and create images, animations and simulations using the Povray ray-tracer (http://www.povray.org).
+
+## Usage
+
 To use the template:
 
 * Download the project using the *Downloads* link in the left-menu
@@ -8,10 +18,6 @@ To use the template:
 * Create a new Python virtual environment `virtualenv pypovray`
     * Activate the venv: `source pypovray/bin/activate`
 * Install the required packages: `pip install -r requirements.txt`
-
-## Manuals
-
-[povray_basic.ipynb](http://nbviewer.jupyter.org/urls/bitbucket.org/povray_simulation/raw/master/manual/povray_basic.ipynb)
 
 The `template.py` and `simulation.py` scripts both produce movies taking six seconds (they an be looped). Running `python template.py` will create the output **GIF** movie file such as the one shown below.
 
