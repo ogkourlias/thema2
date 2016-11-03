@@ -4,8 +4,8 @@ Simple template moving a sphere from left to right using Povray
 Uses a number of pre-defined Povray objects to simplify scene building
 '''
 
-__author__  = "Marcel Kempenaar"
-__status__  = "Template"
+__author__ = "Marcel Kempenaar"
+__status__ = "Template"
 __version__ = "2016.1"
 
 from povray import povray, SETTINGS

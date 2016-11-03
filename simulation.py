@@ -6,17 +6,17 @@ To install the requirements (moviepy, ffmpy and vapory), use:
 '''
 
 from math import sin, cos, pi, sqrt
-from vapory import *
-from povray import povray, SETTINGS
 import argparse
 import sys
+from povray import povray, SETTINGS
+from vapory import *
 
 ## Scene Global Settings
 radius    = 10     # scene circle radius
 xcenter   = 0
 zcenter   = 0
 ## Scene Settings and Static Objects
-main_light = LightSource([2, 4, -3], 3,  'fade_distance', 5,
+main_light = LightSource([2, 4, -3], 3, 'fade_distance', 5,
                          'fade_power', 2, 'area_light', 3, 3, 12, 12,
                          'circular orient adaptive', 0)
 back_light = LightSource([-8, 3, -1], 'color', [1, 0.8, 0,4],
@@ -31,8 +31,8 @@ def _get_xz(step, steps):
     Calculates the x- and z-positions given the position in a circle.
     '''
     x = xcenter - sin(float(step) / steps * 2.0 * pi) * radius
-    z = zcenter - cos(float(step) / steps * 2.0 * pi) * radius    
-    return (x,z)
+    z = zcenter - cos(float(step) / steps * 2.0 * pi) * radius
+    return (x, z)
 
 def sphere_circle():
     ''' Creates a circle made up of 20 small spheres. 
@@ -41,10 +41,10 @@ def sphere_circle():
     steps   = 200 # number of steps in a circle
     ring = []
     ring_node_size = 0.6
-    smodel = Texture(Pigment('color', [1, 0, 0], 'filter', 0.5), 
+    smodel = Texture(Pigment('color', [1, 0, 0], 'filter', 0.5),
                      Finish('phong', 0.8, 'reflection', 0.5))
     for i in range(steps):
-        if i % int(steps / spheres)  == 0: # At every 1/8th place a sphere
+        if i % int(steps / spheres) == 0: # At every 1/8th place a sphere
             x, z = _get_xz(i, steps)
             ring.append(Sphere([x, 0, z], ring_node_size, smodel))
     return ring
@@ -58,13 +58,12 @@ def scene(t):
 
     ## Rotating sphere
     sphere_rad = 1.8
-    sphere_diam = sphere_rad * 2
     sphere = Sphere([x, 0, z], sphere_rad,
                     Pigment('color', [0.9, 0.05, 0.05], 'filter', 0.7),
-                    Interior('ior',1), Finish('phong', 0.6, 'reflection', 0.4))
+                    Interior('ior', 1), Finish('phong', 0.6, 'reflection', 0.4))
 
     ## Intersecting cylinder slope
-    t_slope  = 0 if x == 0 else (zcenter - z) / (xcenter - x) 
+    t_slope = 0 if x == 0 else (zcenter - z) / (xcenter - x)
     inv_slope = 0 if t_slope == 0 else -(1 / t_slope)
 
     # Calculate x and y of cylinder end-points given length of side c (right triangle)
@@ -84,7 +83,7 @@ def scene(t):
     # Intersecting cylinder object
     rod = Cylinder([l_x_end, 0, l_z_end], [r_x_end, 0, r_z_end],
                    1.0, 'open', Pigment('color', [1, 0, 0], 'filter', 0.8),
-                   Interior('ior',1), Finish('phong', 0, 'reflection', 0))
+                   Interior('ior', 1), Finish('phong', 0, 'reflection', 0))
 
     # 'Hollow out' the rotating sphere with the intersecting cylinder using the Difference
     traveller = Difference(sphere, rod)
@@ -109,10 +108,10 @@ def main(args):
         if args.mp4:
             povray.render_scene_to_mp4(scene, args.gif, time=False)
     return 0
-    
+
 if __name__ == 'vapory':
     parser = argparse.ArgumentParser(description='Create a rendered movie using Povray')
-    parser.add_argument('--time', type=float, 
+    parser.add_argument('--time', type=float,
                         help='A specific time (T) in seconds to render (single image output file)')
     parser.add_argument('--gif', action="store_true", default=False,
                         help='Create a GIF movie file using moviepy. Note; this reduces the output quality')

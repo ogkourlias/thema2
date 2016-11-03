@@ -14,7 +14,7 @@ __version__ = "2016.2"
 import sys
 import math
 import argparse
-from povray import povray, pdb, load_config
+from povray import povray, pdb, SETTINGS, load_config
 from vapory import Scene, LightSource
 
 
@@ -23,10 +23,10 @@ def scene_objects():
     # Store in the global namespace so the scene() method has access
     global ETHANOL, VIAGRA, BENZENE, RAD_PER_SCENE, FRONT_LIGHT
 
-    FRONT_LIGHT = LightSource([0, 14, -28], 'color', [1, 0.8, 0,4],
-                            'fade_distance', 6, 'fade_power', 2,
-                            'area_light', 3, 3, 12, 12,
-                            'circular orient adaptive', 0)
+    FRONT_LIGHT = LightSource([0, 14, -28], 'color', [1, 0.8, 0.4],
+                              'fade_distance', 6, 'fade_power', 2,
+                              'area_light', 3, 3, 12, 12,
+                              'circular orient adaptive', 0)
 
     # Calculate the radians per scene
     RAD_PER_SCENE = (math.pi / 180) * 3
@@ -82,17 +82,16 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Render PDB files using Python and Povray')
     parser.add_argument('--config', default='default.ini')
-    parser.add_argument('--time', type=float, 
+    parser.add_argument('--time', type=float,
                         help='A specific time (T) in seconds to render (single image output file)')
     parser.add_argument('--gif', action="store_true", default=False,
                         help='Create a GIF movie file using moviepy. Note; this reduces the output quality')
     parser.add_argument('--mp4', action="store_true", default=False,
                         help='Create a high-quality MP4 output file using ffmpeg')
 
-    args = parser.parse_args()
-    
+    pargs = parser.parse_args()
+
     # Read configuration file, either default or the user supplied version
-    load_config(args.config)
-    
-    sys.exit(main(args))
-        
+    povray.SETTINGS = load_config(args.config)
+
+    sys.exit(main(pargs))

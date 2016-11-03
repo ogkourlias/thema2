@@ -1,10 +1,10 @@
 '''
 Simple template rendering a molecule originating from PDB files.
 
-The animation demonstrates the molecule both rotating and traversing on a 
+The animation demonstrates the molecule both rotating and traversing on a
 trajectory using the move_to and rotate methods.
 
-NOTE: also shows how to do prototyping using multithreading; see the 
+NOTE: also shows how to do prototyping using multithreading; see the
 prototype.ini configuration file.
 
 Uses a number of pre-defined Povray objects to simplify scene building
@@ -14,12 +14,10 @@ __author__ = "Marcel Kempenaar"
 __status__ = "Template"
 __version__ = "2016.2"
 
-import sys
 import math
 import copy
-import argparse
-from povray import povray, pdb, load_config, SETTINGS
-from vapory import Scene, LightSource, Sphere
+from povray import povray, pdb, load_config
+from vapory import Scene, LightSource
 
 
 def scene_objects():
@@ -27,10 +25,10 @@ def scene_objects():
     # Store in the global namespace so the scene() method has access
     global ETHANOL, RAD_PER_SCENE, FRONT_LIGHT
 
-    FRONT_LIGHT = LightSource([0, 14, -28], 'color', [1, 0.8, 0,4],
-                            'fade_distance', 6, 'fade_power', 2,
-                            'area_light', 3, 3, 12, 12,
-                            'circular orient adaptive', 0)
+    FRONT_LIGHT = LightSource([0, 14, -28], 'color', [1, 0.8, 0.4],
+                              'fade_distance', 6, 'fade_power', 2,
+                              'area_light', 3, 3, 12, 12,
+                              'circular orient adaptive', 0)
 
     # Calculate the radians per scene
     RAD_PER_SCENE = (math.pi / 180) * 3
@@ -43,18 +41,18 @@ def scene(step):
 
     # The Ethanol molecule is moved on a trajectory representing a 'figure 8' or the infinity
     # symbol by calculating the x- and y-coordinates using the lemniscate of Bernoulli.
-    scale = 25 / (3 - math.cos(2*step));
-    x = scale * math.cos(step);
-    y = scale * math.sin(2*step) / 2;
+    scale = 25 / (3 - math.cos(2*step))
+    x = scale * math.cos(step)
+    y = scale * math.sin(2*step) / 2
 
     # Copying the full molecule - only needed for multithreading
     # This is required for multithreading
     ethanol = copy.deepcopy(ETHANOL)
-    
+
     # Move the molecule to the calculated coordinates
     ethanol.move_to([x, y, -5])
     # Rotate the molecule on x- and y-axes
-    ## NOTE: rotate does NOT work when using a thread-pool, 
+    ## NOTE: rotate does NOT work when using a thread-pool,
     ## use the molecule.rotate_by_step method instead
     ethanol.rotate_by_step([1, 1, 0], RAD_PER_SCENE, step, time=True)
 
@@ -74,9 +72,9 @@ if __name__ == '__main__':
 
     # Render as an MP4 movie
     povray.render_scene_to_mp4(scene, time=True)
-    
+
     # Timing for running the current simulation including creating the movie:
     #  |  Single-thread (s)  |  Multi-threaded (s) |
-    #  |---------------------|---------------------| 
+    #  |---------------------|---------------------|
     #  |       101.561       |       16.341        |
     #  |---------------------|---------------------|
