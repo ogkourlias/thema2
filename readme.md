@@ -9,6 +9,10 @@ To use the template:
     * Activate the venv: `source pypovray/bin/activate`
 * Install the required packages: `pip install -r requirements.txt`
 
+## Manuals
+
+[povray_basic.ipynb](http://nbviewer.jupyter.org/urls/bitbucket.org/povray_simulation/raw/master/manual/povray_basic.ipynb)
+
 The `template.py` and `simulation.py` scripts both produce movies taking six seconds (they an be looped). Running `python template.py` will create the output **GIF** movie file such as the one shown below.
 
 ![Template movie](https://bitbucket.org/mkempenaar/povray_simulation/raw/master/movies/template_md.gif)
