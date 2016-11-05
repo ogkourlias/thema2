@@ -1,4 +1,4 @@
-from vapory import Sphere, Scene, Pigment, Texture, Finish
+from vapory import Sphere, Scene, Text, Pigment, Texture, Finish, Intersection
 from povray import povray, SETTINGS
 from scipy.linalg import expm3, norm
 import numpy as np
@@ -10,9 +10,18 @@ import re
 class PDBMolecule(object):
     ''' Models a molecule given a PDB file '''
 
-    def __init__(self, pdb_file, center=True, offset=[0,0,0]):
+    def __init__(self, pdb_file, center=True, offset=[0,0,0], atoms=False):
         ''' Parses and renders the molecule given a PDB file '''
-        self._parse_pdb(pdb_file)
+
+        # If a list of atoms is provided, use these instead of a PDB file
+        # This allows dividing the molecule in segments, see divide()
+        if atoms:
+            self.atoms = atoms
+        else:
+            self._parse_pdb(pdb_file)
+            self.povray_molecule = []
+
+        # Molecule name
         self.molecule = pdb_file
         self.offset = np.array(offset)
         if np.count_nonzero(self.offset) > 0:
@@ -23,7 +32,7 @@ class PDBMolecule(object):
             self.center = self._center_of_mass()
         print('Created a molecule from "', pdb_file, '" placed at ', 
               np.around(self.center, 2) , ' (centered is ', center, ')', sep='')
-        self.povray_molecule = []
+        self.render_molecule(offset)
         self.model = None
 
     def _parse_pdb(self, fname):
@@ -41,16 +50,10 @@ class PDBMolecule(object):
 
     def _get_atom(self, element, offset):
         ''' Creates a Povray Sphere object representing an atom '''
-        atom = re.findall('[0-9]*([A-Z]+)[0-9]*', element.name)
-        if atom:
-            atom = atom[0]
-        else:
-            print(element.name, element.warnings)
-        
-        return Sphere([element.x, element.y, element.z], 
-                      povray.atom_sizes.get(atom, 0.5),
-                      Texture(Pigment('color', povray.atom_colors.get(atom, [0, 1, 1])),
-                              Finish('phong', 0.8, 'reflection', 0.15)))
+        return Sphere([element.x + offset[0], element.y + offset[1], element.z + offset[2]], 
+                      povray.atom_sizes.get(element.name, 0.5),
+                      Texture(Pigment('color', povray.atom_colors.get(element.name, [0, 1, 1])),
+                              Finish('phong', 0.9, 'reflection', 0.1)))
 
     def render_molecule(self, offset=[0, 0, 0]):
         ''' Renders a molecule given a list with atoms '''
@@ -150,7 +153,78 @@ class PDBMolecule(object):
 
         # Regenerate the molecule
         self.render_molecule()
-        
+
+    def show_label(self, camera=[0, 0, 0], name=False):
+        ''' Shows a label of each atom in the list of atoms by printing either
+            its index or atom name on the 'front' of the atom. The position
+            of the label depends on the camera position; it always faces the
+            camera so that it's readable. '''
+        # Storing all label Povray objects
+        labels = []
+
+        for i, atom in enumerate(self.atoms):
+            # Default atom size (for undefined atoms) is 0.5
+            atom_radius = povray.atom_sizes.get(atom.name, 0.5)
+            if name:
+                label = atom.name
+                letter_offset = np.array([0.15 * len(label), 0.13 * len(label), 0.0])
+            else:
+                label = i
+                letter_offset = np.array([0.15, 0.13, 0.0])
+
+            # Defining the two vectors; Atom center (A) and camera viewpoint (B)
+            A = np.array([atom.x, atom.y, atom.z])
+            B = np.array(camera)
+            BA = B-A # Vector B->A
+            d = math.sqrt(sum(np.power(BA, 2))) # Euclidean distance between the vectors
+            BA = BA / d # Normalize by its length; BA / ||BA||
+            # Here we find a point on the vector B->A with a distance of 'scale' from the
+            # atom center towards the camera (outside of the atom).
+            scale = atom_radius * 1.2
+            N = A + scale * BA # Scale and add to A
+
+            # Now that we have the distance we calculate the angles facing the camera
+            x1, y1, z1 = A
+            x2, y2, z2 = B
+            yangle = math.degrees(math.atan2(x1 - x2, z1 - z2))
+            xangle = math.degrees(math.atan2(y1 - y2, z1 - z2))
+
+            # Correct for the letter size since text is never centered and place
+            # the text in front of the atom to make it visible
+            N -= letter_offset
+            emboss = -0.2
+
+            # 'rotate' rotates the text to the camera and 'translate' positions the text
+            # on the vector originating from the camera viewpoint to the atom center.
+            # The scaling parameter scales (reduces) the text size
+            text = Text('ttf', '"timrom.ttf"', '"{}"'.format(str(label)), 1, 0,
+                        'scale', [0.5, 0.5, 0.5], povray.text_model,
+                        'rotate', [-xangle, yangle, 0], 'translate', N)
+
+            # Create a sphere with the same position and dimensions as the atom
+            sphere = Sphere(A, atom_radius, povray.text_model)
+            # Add the intersection of this sphere and the text to the labels
+            labels.append(Intersection(sphere, text, 'translate', [0, 0, emboss]))
+
+        self.povray_molecule += labels
+
+    def divide(self, atoms, name, offset):
+        ''' Given a list of atom indices, split the current molecule into two molecules
+            where the original one is reduced and a new one is built with the defined
+            atoms '''
+        # Create a list with all requested atoms
+        molecule = [self.atoms[i] for i in atoms]
+
+        # Remove atoms from self
+        for index in sorted(atoms, reverse=True):
+            del self.atoms[index]
+
+        # Regenerate the reduced molecule
+        self.render_molecule()
+
+        # Return a new PDBMolecule
+        return PDBMolecule(name, center=False, offset=offset, atoms=molecule)
+
     def _calc_rotate(self, axis, theta, v):
         ''' Calculates the new coordinates for a rotation
             axis:  vector, axis to rotate around
@@ -183,13 +257,15 @@ class PDBMolecule(object):
                                                                 format(atm.z, '.2f')))
         return '{}{}\n{}\n'.format(header, '\n'.join(structure), footer)
 
+
 class PDBAtom(object):
     ''' Simple class to parse a single ATOM to retrieve x, y and z coordinates'''
     def __init__(self, string):
         #this is what we need to parse
         #ATOM      1  CA  ORN     1       4.935   1.171   7.983  1.00  0.00      sega
         #XPLOR pdb files do not fully agree with the PDB conventions 
-        self.name = string[12:16].strip()
+        name = string[12:16].strip()
+        self.name = re.findall('[0-9]*([A-Z]+)[0-9]*', name)[0]
         self.x = float(string[30:38].strip())
         self.y = float(string[38:46].strip())
         self.z = float(string[46:54].strip())
