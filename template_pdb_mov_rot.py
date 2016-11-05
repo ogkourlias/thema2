@@ -55,7 +55,7 @@ def scene(step):
     ## NOTE: rotate does NOT work when using a thread-pool,
     ## use the molecule.rotate_by_step method instead
     ethanol.rotate_by_step([1, 1, 0], RAD_PER_SCENE, step, time=True)
-
+    ethanol.show_label(camera=povray.default_camera, name=True)
     # Return a 'Scene' object containing -all- objects to render, i.e. the camera,
     # lights and in this case, a molecule.
     return Scene(povray.default_camera,

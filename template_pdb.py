@@ -92,6 +92,6 @@ if __name__ == '__main__':
     pargs = parser.parse_args()
 
     # Read configuration file, either default or the user supplied version
-    povray.SETTINGS = load_config(args.config)
+    povray.SETTINGS = load_config(pargs.config)
 
     sys.exit(main(pargs))

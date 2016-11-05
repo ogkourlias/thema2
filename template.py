@@ -8,6 +8,7 @@ __author__ = "Marcel Kempenaar"
 __status__ = "Template"
 __version__ = "2016.1"
 
+import sys
 from povray import povray, SETTINGS
 from vapory import Sphere, Scene
 
@@ -33,6 +34,12 @@ def scene(step):
     return Scene(povray.default_camera,
                  objects=[sphere, povray.default_ground, povray.default_light])
 
-if __name__ == '__main__':
+def main(args):
+    ''' Main function performing the rendering '''
     # Render as an MP4 movie
     povray.render_scene_to_mp4(scene, time=True)
+
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))

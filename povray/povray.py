@@ -27,7 +27,7 @@ def make_frame(t, scene, time, i=None):
     if not time:
         t = i
 
-    # Change working directory to temp location, one for each 'worker' in the Pool                                                
+    # Change working directory to temp location, one for each 'worker' in the Pool         
     tmp_folder = mkdtemp()
     os.chdir(tmp_folder)
 
