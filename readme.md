@@ -2,13 +2,13 @@
 
 ## Manuals
 
-* ###[Installing and Configuring](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/povray_simulation/raw/master/manual/install_and_configure.ipynb)
+* ###[Installing and Configuring](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/install_and_configure.ipynb)
 
     **Guide for Installing and Configuring the software**  
       
     This short document describes how to get the required software (mainly, this Python package), configure it and run one of the included examples on the Bioinformatics computer network. At the bottom of the document is a section on how to do this on your own computer.
 
-* ###[Basic usage of PyPovray](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/povray_simulation/raw/master/manual/povray_basic.ipynb)
+* ###[Basic usage of PyPovray](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/povray_basic.ipynb)
 
     **Basic Povray Simulation Example**  
       
