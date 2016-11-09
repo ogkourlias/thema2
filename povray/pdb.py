@@ -32,6 +32,12 @@ class PDBMolecule(object):
             self.center = self._center_of_mass()
         print('Created a molecule from "', pdb_file, '" placed at ', 
               np.around(self.center, 2) , ' (centered is ', center, ')', sep='')
+
+        # Labels
+        self.show_name = False
+        self.show_index = False
+        self.camera = None
+
         self.render_molecule(offset)
         self.model = None
 
@@ -57,6 +63,14 @@ class PDBMolecule(object):
 
     def render_molecule(self, offset=[0, 0, 0]):
         ''' Renders a molecule given a list with atoms '''
+        if self.show_name:
+            self.show_label(camera=self.camera, name=True)
+        if self.show_index:
+            self.show_label(camera=self.camera, name=False)
+        self.povray_molecule = [self._get_atom(a, offset) for a in self.atoms]
+
+    def _update_render(self, offset=[0, 0, 0]):
+        ''' Updates the render without re-applying the labels '''
         self.povray_molecule = [self._get_atom(a, offset) for a in self.atoms]
 
     def _center_of_mass(self):
@@ -154,13 +168,16 @@ class PDBMolecule(object):
         # Regenerate the molecule
         self.render_molecule()
 
-    def show_label(self, camera=[0, 0, 0], name=False):
+    def show_label(self, camera=povray.default_camera, name=False):
         ''' Shows a label of each atom in the list of atoms by printing either
             its index or atom name on the 'front' of the atom. The position
             of the label depends on the camera position; it always faces the
             camera so that it's readable. '''
         # Storing all label Povray objects
         labels = []
+        # Get the coordinates of the camera
+        # TODO: does not work for all camera's!
+        camera_coords = np.array(camera.args[1])
 
         for i, atom in enumerate(self.atoms):
             # Default atom size (for undefined atoms) is 0.5
@@ -168,13 +185,17 @@ class PDBMolecule(object):
             if name:
                 label = atom.name
                 letter_offset = np.array([0.15 * len(label), 0.13 * len(label), 0.0])
+                self.show_name = True
             else:
                 label = i
-                letter_offset = np.array([0.15, 0.13, 0.0])
+                ndigits = len(str(abs(label)))
+                letter_offset = np.array([0.15 * ndigits, 0.13 * ndigits, 0.0])
+                self.show_index = True
+            self.camera = camera
 
             # Defining the two vectors; Atom center (A) and camera viewpoint (B)
             A = np.array([atom.x, atom.y, atom.z])
-            B = np.array(camera)
+            B = np.array(camera_coords)
             BA = B-A # Vector B->A
             d = math.sqrt(sum(np.power(BA, 2))) # Euclidean distance between the vectors
             BA = BA / d # Normalize by its length; BA / ||BA||
@@ -192,7 +213,7 @@ class PDBMolecule(object):
             # Correct for the letter size since text is never centered and place
             # the text in front of the atom to make it visible
             N -= letter_offset
-            emboss = -0.2
+            emboss = -0.05
 
             # 'rotate' rotates the text to the camera and 'translate' positions the text
             # on the vector originating from the camera viewpoint to the atom center.
@@ -206,6 +227,9 @@ class PDBMolecule(object):
             # Add the intersection of this sphere and the text to the labels
             labels.append(Intersection(sphere, text, 'translate', [0, 0, emboss]))
 
+        # Update the rendering
+        self._update_render()
+        # Add the labels to atoms
         self.povray_molecule += labels
 
     def divide(self, atoms, name, offset):
@@ -265,7 +289,7 @@ class PDBAtom(object):
         #ATOM      1  CA  ORN     1       4.935   1.171   7.983  1.00  0.00      sega
         #XPLOR pdb files do not fully agree with the PDB conventions 
         name = string[12:16].strip()
-        self.name = re.findall('[0-9]*([A-Z]+)[0-9]*', name)[0]
+        self.name = re.findall('[0-9]*([A-Z]+)[0-9]*', name)[0][0]
         self.x = float(string[30:38].strip())
         self.y = float(string[38:46].strip())
         self.z = float(string[46:54].strip())

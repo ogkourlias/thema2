@@ -1,7 +1,7 @@
 from vapory import *
 
 ## Static Object and Model Library
-default_light        = LightSource([2, 4, -3], 2.5)
+default_light        = LightSource([2, 4, -3], 1.5)
 default_sphere_model = Texture(Pigment('color', [0.9, 0.05, 0.05], 'filter', 0.7),
                                Finish('phong', 0.6, 'reflection', 0.4))
 default_camera       = Camera('location', [0, 14, -28], 'look_at', [0, 0, -3])
