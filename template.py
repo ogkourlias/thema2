@@ -14,18 +14,23 @@ from vapory import Sphere, Scene
 
 def scene(step):
     ''' Returns the scene at step number (1 step per frame) '''
-    frames = SETTINGS.RenderFPS * SETTINGS.Duration
+    nframes = SETTINGS.RenderFPS * SETTINGS.Duration
 
+    # Starting- and end-point (left side)
+    x_start = -10
+    x_end = 10
+    distance = x_end - x_start
+    
     # Calculate distance to move at each step
-    distance_per_frame = (20 / frames) * 2
+    distance_per_frame = (distance / nframes) * 2
 
     # Calculate new x-coordinate
-    if step < (frames / 2):
+    if step < (nframes / 2):
         # Move from left to right (starting at x = -10)
-        x_coord = -10 + step * distance_per_frame
+        x_coord = x_start + step * distance_per_frame
     else:
         # Move from right to left (starting at x = 10)
-        x_coord = 10 - (step - (frames / 2)) * distance_per_frame
+        x_coord = x_end - (step - (nframes / 2)) * distance_per_frame
 
     # Create sphere at calculated x-coordinate using default model
     sphere = Sphere([x_coord, 0, 0], 2, povray.default_sphere_model)
@@ -37,7 +42,7 @@ def scene(step):
 def main(args):
     ''' Main function performing the rendering '''
     # Render as an MP4 movie
-    povray.render_scene_to_mp4(scene, time=True)
+    povray.render_scene_to_mp4(scene, time=False)
 
     return 0
 

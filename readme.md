@@ -14,6 +14,12 @@
       
     This document describes the most basic usage of the **povray_simulation** Python package that is provided for this course. This library is used to render (*draw*) objects and create images, animations and simulations using the Povray ray-tracer (http://www.povray.org).
 
+* ###[Pypovray Simulating - Part One](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/pypovray_simulation_1.ipynb)
+
+    **Creating Simulations with pypovray; a simple animation**
+    
+    Now that we have played a bit with positioning objects in 3D space, the next step will be animating objects in 3D space.
+
 ## Usage
 
 To use the template:
