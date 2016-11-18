@@ -90,7 +90,8 @@ def render_scene_to_gif(scene, render_mp4=False, time=True):
     # Get a list of all rendered images (these are ordered by default)
     image_files = glob('{}/{}_*.png'.format(SETTINGS.OutputImageDir, SETTINGS.OutputPrefix))
     # Combine images into GIF file using moviepy
-    ImageSequenceClip(image_files, fps=SETTINGS.RenderFPS).write_gif('{}.gif'.format(SETTINGS.OutputPrefix))
+    ImageSequenceClip(sorted(image_files),
+                      fps=SETTINGS.RenderFPS).write_gif('{}.gif'.format(SETTINGS.OutputPrefix))
 
 def render_scene_to_mp4(scene, render_gif=False, time=True):
     ''' Creates a high-quality MP4 movie using 'ffmpeg' '''

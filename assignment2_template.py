@@ -4,7 +4,11 @@ from vapory import Cylinder, Cone, Pigment, Texture, Finish
 
 def legend(start_position, axis_length):
     ''' Function docstring '''
-    print('Start position:', start_position)
+
+    # Reduce the AXIS_LENGTH by the length of the Cone (1) so that
+    # the total length is exactly the AXIS_LENGTH
+    axis_length -= 1
+
     ## Set the END position to the START + AXIS_LENGTH
     x_cylinder_end = list(start_position)
     y_cylinder_end = list(start_position)

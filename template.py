@@ -2,16 +2,24 @@
 Simple template moving a sphere from left to right using Povray
 
 Uses a number of pre-defined Povray objects to simplify scene building
+
+    usage:
+        python3 template.py
 '''
 
+# METADATA VARIABLES
 __author__ = "Marcel Kempenaar"
 __status__ = "Template"
 __version__ = "2016.1"
 
+# IMPORT
 import sys
 from povray import povray, SETTINGS
 from vapory import Sphere, Scene
 
+# GLOBAL VARIABLES
+
+# FUNCTIONS
 def scene(step):
     ''' Returns the scene at step number (1 step per frame) '''
     nframes = SETTINGS.RenderFPS * SETTINGS.Duration
@@ -39,11 +47,17 @@ def scene(step):
     return Scene(povray.default_camera,
                  objects=[sphere, povray.default_ground, povray.default_light])
 
+# MAIN
 def main(args):
     ''' Main function performing the rendering '''
+    
+    # PREPARATION
+    
+    # WORK
     # Render as an MP4 movie
     povray.render_scene_to_mp4(scene, time=False)
 
+    # FINISH
     return 0
 
 if __name__ == '__main__':

@@ -10,7 +10,7 @@ import re
 class PDBMolecule(object):
     ''' Models a molecule given a PDB file '''
 
-    def __init__(self, pdb_file, center=True, offset=[0,0,0], atoms=False):
+    def __init__(self, pdb_file, center=True, offset=[0,0,0], atoms=False, model=None):
         ''' Parses and renders the molecule given a PDB file '''
 
         # If a list of atoms is provided, use these instead of a PDB file
@@ -23,23 +23,27 @@ class PDBMolecule(object):
 
         # Molecule name
         self.molecule = pdb_file
+        
+        # If an offset is provided, apply this
         self.offset = np.array(offset)
         if np.count_nonzero(self.offset) > 0:
             self._recenter_molecule()
         self.center = self._center_of_mass()
+        
+        # Center the molecule based on the 'pseudo' center of mass
         if center:
             self.center_molecule()
             self.center = self._center_of_mass()
         print('Created a molecule from "', pdb_file, '" placed at ', 
               np.around(self.center, 2) , ' (centered is ', center, ')', sep='')
 
-        # Labels
+        # Required for the labels
         self.show_name = False
         self.show_index = False
         self.camera = None
-
+        
+        self.model = model
         self.render_molecule(offset)
-        self.model = None
 
     def _parse_pdb(self, fname):
         ''' Read in a PDB file and create an atom object for each ATOM definition '''
@@ -56,10 +60,13 @@ class PDBMolecule(object):
 
     def _get_atom(self, element, offset):
         ''' Creates a Povray Sphere object representing an atom '''
+        if self.model:
+            atom_model = self.model
+        else:
+            atom_model = Texture(Pigment('color', povray.atom_colors.get(element.name, [0, 1, 1])),
+                                 Finish('phong', 0.9, 'reflection', 0.1))
         return Sphere([element.x + offset[0], element.y + offset[1], element.z + offset[2]], 
-                      povray.atom_sizes.get(element.name, 0.5),
-                      Texture(Pigment('color', povray.atom_colors.get(element.name, [0, 1, 1])),
-                              Finish('phong', 0.9, 'reflection', 0.1)))
+                      povray.atom_sizes.get(element.name, 0.5), atom_model)
 
     def render_molecule(self, offset=[0, 0, 0]):
         ''' Renders a molecule given a list with atoms '''
