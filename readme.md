@@ -20,7 +20,7 @@
     
     Now that we have played a bit with positioning objects in 3D space, the next step will be animating objects in 3D space.
 
-* ###[Povray Objects and Styling](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/pypovray_objects.ipynb)
+* ###[Povray Objects and Styling](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/povray_objects.ipynb)
 
     **Povray Objects, Styling and other modifiers**
 
