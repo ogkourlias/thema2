@@ -20,6 +20,12 @@
     
     Now that we have played a bit with positioning objects in 3D space, the next step will be animating objects in 3D space.
 
+* ###[Povray Objects and Styling](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/pypovray_objects.ipynb)
+
+    **Povray Objects, Styling and other modifiers**
+
+    A summary showing an incomplete list of Povray objects that can be created using the `pypovray` project, how to apply different styles to these objects and some more advanced topics such as *scaling*, *moving* and *rotating* these objects. Most sections link to the official Povray documentation and other useful sources found online. 
+
 ## Usage
 
 To use the template:
