@@ -28,9 +28,9 @@
 
 ![pypovray library](https://bitbucket.org/mkempenaar/pypovray/raw/master/manual/files/pypovray.png)
 
-## Usage
+## Summary
 
-To install and use the template (see [the installation manual](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/install_and_configure.ipynb) for a complete guide):
+To perform a clean install and use the template (**NOTE:** see [the installation manual](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/install_and_configure.ipynb) for a complete guide):
 
 * Download the project using the *Downloads* link in the left-menu
 * Extract the downloaded ZIP file
