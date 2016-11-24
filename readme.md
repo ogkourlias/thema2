@@ -2,31 +2,39 @@
 
 ## Manuals and Assignments
 
-* ###[Installing and Configuring](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/install_and_configure.ipynb)
+* ###[Installing and Configuring](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/install_and_configure.ipynb) \[[MIRROR](https://bioinf.nl/~marcelk/pypovray/install_and_configure.html)\]
 
     **Guide for Installing and Configuring the software**  
       
     This short document describes how to get the required software (mainly, this Python package), configure it and run one of the included examples on the Bioinformatics computer network. At the bottom of the document is a section on how to do this on your own computer.
 
-* ###[Basic usage of PyPovray](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/povray_basic.ipynb)
+* ###[Basic usage of PyPovray](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/povray_basic.ipynb) \[[MIRROR](https://bioinf.nl/~marcelk/pypovray/povray_basic.html)\]
 
     **Basic Povray Simulation Example**  
       
     This document describes the most basic usage of the **povray_simulation** Python package that is provided for this course. This library is used to render (*draw*) objects and create images, animations and simulations using the Povray ray-tracer (http://www.povray.org).
 
-* ###[Pypovray Simulating - Part One](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/pypovray_simulation_1.ipynb)
+* ###[Pypovray Simulating - Part One](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/pypovray_simulation_1.ipynb) \[[MIRROR](https://bioinf.nl/~marcelk/pypovray/pypovray_simulation_1.html)\]
 
     **Creating Simulations with pypovray; a simple animation**
     
     Now that we have played a bit with positioning objects in 3D space, the next step will be animating objects in 3D space.
 
-* ###[Povray Objects and Styling](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/povray_objects.ipynb)
+* ###[Povray Objects and Styling](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/povray_objects.ipynb) \[[MIRROR](https://bioinf.nl/~marcelk/pypovray/povray_objects.html)\]
 
     **Povray Objects, Styling and other modifiers**
 
     A summary showing an incomplete list of Povray objects that can be created using the `pypovray` project, how to apply different styles to these objects and some more advanced topics such as *scaling*, *moving* and *rotating* these objects. Most sections link to the official Povray documentation and other useful sources found online. 
 
+The `pypovray` project functions as a translation layer between `Python`- and `Povray`-code as shown in the images below, where:
+* the `povray` library from this repository is used to configure the project (render settings, file locations) as well as PDB-file rendering and
+* the ![Vapory library](http://zulko.github.io/blog/2014/11/13/things-you-can-do-with-python-and-pov-ray/) is used to translate the *Scene* constructed in `Python` code to actual `Povray` code.
+
 ![pypovray library](https://bitbucket.org/mkempenaar/pypovray/raw/master/manual/files/pypovray.png)
+
+These code snippets show a single `Sphere` object placed in a `Scene` combined with a `Camera` and `LightSource`:
+
+![py2povray](https://bitbucket.org/mkempenaar/pypovray/raw/master/manual/files/py2povray.png)
 
 ## Summary
 
