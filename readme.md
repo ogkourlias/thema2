@@ -1,6 +1,6 @@
 # A template project demonstrating the use of the Povray raytracer
 
-## Manuals
+## Manuals and Assignments
 
 * ###[Installing and Configuring](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/install_and_configure.ipynb)
 
