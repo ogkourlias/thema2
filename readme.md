@@ -26,6 +26,8 @@
 
     A summary showing an incomplete list of Povray objects that can be created using the `pypovray` project, how to apply different styles to these objects and some more advanced topics such as *scaling*, *moving* and *rotating* these objects. Most sections link to the official Povray documentation and other useful sources found online. 
 
+![pypovray library](https://bitbucket.org/mkempenaar/pypovray/raw/master/manual/files/pypovray.png)
+
 ## Usage
 
 To use the template:
