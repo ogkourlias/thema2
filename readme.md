@@ -20,11 +20,23 @@
     
     Now that we have played a bit with positioning objects in 3D space, the next step will be animating objects in 3D space.
 
+* ###[Pypovray Simulating - Part Two](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/pypovray_simulation_2.ipynb) \[[mirror](https://bioinf.nl/~marcelk/pypovray/pypovray_simulation_2.html)\]
+
+    **Creating Simulations with pypovray; visualizing molecules**
+    
+    *In Development - manual and assignments for creating animations using complex molecules loaded from PDB files*
+
 * ###[Povray Objects and Styling](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/povray_objects.ipynb) \[[mirror](https://bioinf.nl/~marcelk/pypovray/povray_objects.html)\]
 
     **Povray Objects, Styling and other modifiers**
 
     A summary showing an incomplete list of Povray objects that can be created using the `pypovray` project, how to apply different styles to these objects and some more advanced topics such as *scaling*, *moving* and *rotating* these objects. Most sections link to the official Povray documentation and other useful sources found online. 
+
+* ###[PyPovray FAQ](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/FAQ.ipynb) \[[mirror](https://bioinf.nl/~marcelk/pypovray/FAQ.html)\]
+
+    **PyPovray Frequently Asked Questions**
+
+    A list of known issues with workarounds. Work in progress.
 
 The `pypovray` project functions as a translation layer between `Python`- and `Povray`-code as shown in the images below, where:
 * the `povray` library from this repository is used to configure the project (render settings, file locations) as well as PDB-file rendering and
