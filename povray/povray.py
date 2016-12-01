@@ -3,7 +3,7 @@ from glob import glob
 from povray import SETTINGS
 from povray.models import *
 import configparser
-import distutils
+from distutils import util
 import shutil
 import os
 
@@ -61,7 +61,7 @@ def _render_scene(scene, time):
     # Pre-build scene times, one per frame
     timepoints = [i * ftime for i in range(int(SETTINGS.Duration * SETTINGS.RenderFPS))]
 
-    if distutils.util.strtobool(SETTINGS.UsePool):
+    if util.strtobool(SETTINGS.UsePool):
       # TODO: map the objects in a more efficient way to the make_frame method
       scene_flist = [scene for i in range(len(timepoints))]
       time_list = [time for i in range(len(timepoints))]
