@@ -1,17 +1,20 @@
+"""
+This module offers functionality to render a frame or movie given a 
+Vapory 'Scene' object. 
+"""
+
+from pathos.multiprocessing import ProcessingPool as Pool
+from moviepy.editor import ImageSequenceClip
 from tempfile import mkdtemp
 from glob import glob
 from povray import SETTINGS
 from povray.models import *
 import configparser
 from distutils import util
+import ffmpy
 import shutil
 import os
 
-# Python multiprocessing using extended pickle serialization with
-# dill: https://github.com/uqfoundation/dill
-# and pathos: https://github.com/uqfoundation/pathos
-
-from pathos.multiprocessing import ProcessingPool as Pool
 
 def make_frame(t, scene, time, i=None):
     ''' Runs Povray through the vapory library for the frame at time t '''
@@ -84,9 +87,6 @@ def render_scene_to_gif(scene, render_mp4=False, time=True):
     # Render the scenes (creates PNG images in the SETTINGS.OutputImageDir folder)
     _render_scene(scene, time)
 
-    # Import moviepy to stitch the files into a GIF
-    from moviepy.editor import ImageSequenceClip
-
     # Get a list of all rendered images (these are ordered by default)
     image_files = glob('{}/{}_*.png'.format(SETTINGS.OutputImageDir, SETTINGS.OutputPrefix))
     # Combine images into GIF file using moviepy
@@ -99,9 +99,6 @@ def render_scene_to_mp4(scene, render_gif=False, time=True):
     # Render the scenes only if no GIF file has already been created
     if not render_gif:
         _render_scene(scene, time)
-
-    # Import Python ffmpeg wrapper
-    import ffmpy
     
     # Build the ffmpeg command to render an MP4 movie file using the h.x264 codex and yuv420p format
     ff = ffmpy.FFmpeg(
