@@ -239,7 +239,7 @@ class PDBMolecule(object):
         # Add the labels to atoms
         self.povray_molecule += labels
 
-    def divide(self, atoms, name, offset):
+    def divide(self, atoms, name, offset=[0,0,0]):
         ''' Given a list of atom indices, split the current molecule into two molecules
             where the original one is reduced and a new one is built with the defined
             atoms '''
