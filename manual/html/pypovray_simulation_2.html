@@ -11929,9 +11929,17 @@ ATOM      3 2HH  OSP3    1       3.750  -0.068  -9.293  1.00  0.00
 TER              
 
 </code></pre>
-<p>where each <code>ATOM</code> describes the specific atom and its location in 3D space. Optionally there can be connections defined that list connections between atoms for use in so called <em>ball-and-stick</em> models. Our module loads a PDB file and parses atoms and their position (for example the Oxygen atom is placed at <code>[</code><font color='red'>4.013</font><code>,</code> <font color='blue'>0.831</font><code>,</code> <font color='green'>-9.083</font><code>]</code>).</p>
+<p>where each <code>ATOM</code> describes the specific atom and its location in 3D space. Such an <code>ATOM</code> 'record' in this file can contain <a href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ATOM">14 values</a> in <em>fixed-width</em> columns.  Optionally there can be connections defined that list connections between atoms for use in so called <em>ball-and-stick</em> models. Our module loads a PDB file and parses atoms and their position (for example the Oxygen atom is placed at <code>[</code><font color='red'>4.013</font><code>,</code> <font color='blue'>0.831</font><code>,</code> <font color='green'>-9.083</font><code>]</code>) which is defined in the following positions;</p>
+
+<pre><code>31 - 38        Real(8.3)     x            Orthogonal coordinates for X in Angstroms.
+39 - 46        Real(8.3)     y            Orthogonal coordinates for Y in Angstroms.
+47 - 54        Real(8.3)     z            Orthogonal coordinates for Z in Angstroms.
+
+</code></pre>
 <p>As a user of our module you can easily load, place and orient complete molecules with a small set of simple commands which are all demonstrated below.</p>
 <h2 id="Finding-Molecules-(PDB-files)">Finding Molecules (PDB-files)<a class="anchor-link" href="#Finding-Molecules-(PDB-files)">&#182;</a></h2><p>We are definately <em>not</em> going to create our own molecular structure (stored as PDB) files so we will use web-resources to gather these files when needed. Of course there is the central <a href="http://www.rcsb.org/pdb/home/home.do"><em>Protein Data Bank</em></a> (PDB) website but contents here are mostly limited to proteins (sometimes also containing its reactants). There are other web resources for non-protein molecules such as the <a href="http://www.worldofmolecules.com"><em>World of Molecules</em></a> and the <a href="https://atb.uq.edu.au/index.py"><em>Automated Topology Builder</em></a> (ATB). Performing a plain internet search combining your molecule of choice with the <strong>PDB</strong> term also often results in a PDB file.</p>
+<p>Once you have found the PDB-file of your choosing, you can download and store this file in the <code>pypovray/pdb/</code> folder. This folder already contains a number of - pretty random - PDB files used for the included examples.</p>
+<p><em>Note</em>: please store the source (URL) of the PDB file in a Readme file when handing in your work. Carefully read the BlackBoard assignment instructions; all requested files (Python code, output images/ movies, PDB files and a Readme file) must be handed in.</p>
 <h2 id="Placing-Molecules">Placing Molecules<a class="anchor-link" href="#Placing-Molecules">&#182;</a></h2><p>Once you found the molecule PDB file you'd want to visualize you can load and place it in your scene with a single line of code, just as you would with placing a <code>Sphere</code> or other Povray object. Below is a minimal example (lacking proper documentation and <code>main</code> function) of rendering a single molecule:</p>
 
 </div>
@@ -12248,9 +12256,9 @@ Molecule is currently centered at [-0. -0.  0.]
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ETHANOL</span><span class="o">.</span><span class="n">move_to</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">])</span> <span class="c1"># Places the whole molecule at the given coordinate</span>
-<span class="n">ETHANOL</span><span class="o">.</span><span class="n">move_offset</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># Moves the molecule 10-points on the x-axis from the current position</span>
-<span class="n">ETHANOL</span><span class="o">.</span><span class="n">move_offset</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="c1"># Moves the molecule on all axis by the given offset</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ethanol</span><span class="o">.</span><span class="n">move_to</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">])</span> <span class="c1"># Places the whole molecule at the given coordinate</span>
+<span class="n">ethanol</span><span class="o">.</span><span class="n">move_offset</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># Moves the molecule 10-points on the x-axis from the current position</span>
+<span class="n">ethanol</span><span class="o">.</span><span class="n">move_offset</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="c1"># Moves the molecule on all axis by the given offset</span>
 </pre></div>
 
 </div>
@@ -12384,9 +12392,9 @@ Molecule is currently centered at [-0. -0.  0.]
 <p>Determine the atom-indices of the part you want to split off. You can enable the atom-labels to get an idea of where each atom is. Do note however that if you split off part of the molecule, all indices are reset; if you split off atoms <code>[10..20]</code> from the original molecule which has 40 atoms in total, you get one new molecule with atoms <code>[1..10]</code> and the original molecule is left with indices <code>[1..30]</code>.</p>
 <p>Disable the atom-index label if you used it, or replace it with the atom-name label before handing in the assignment.</p>
 <p><strong>Step 5</strong></p>
-<p>Once you have - at least - two <code>PDBMolecule</code> objects, move them apart for a small difference to show that they are actually separate molecules</p>
+<p>Once you have - at least - two <code>PDBMolecule</code> objects, move them apart for a small difference to show that they are actually separate molecules.</p>
 <p><strong>Step 6</strong></p>
-<p>Once the molecules are separated, rotate them one full circle in whatever direction you'd like.</p>
+<p>Once the molecules are separated, rotate them one full circle on whatever axis you'd like.</p>
 <p><strong>Tips</strong></p>
 <p>Depending on the size of your molecule and if you use a <code>Background</code> and or <code>Plane</code> object to make it look more pretty; your rendering will take a long time. Please switch to the <code>prototype.ini</code> configuration file (read the <a href="http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/FAQ.ipynb#I-want-to-switch-between-configuration-files;-How-do-I-do-this?">FAQ</a>) during development and switch back to the <code>default.ini</code> before you hand in your work). Additionally, you can use one of our <em>servers</em> to perform the rendering as this will enable you to use your computer for other tasks, speedup the rendering and reduce the heat buildup in the classrooms. For intermediate rendering using the <code>prototype.ini</code> file you could use:</p>
 
