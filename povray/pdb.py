@@ -23,7 +23,7 @@ class PDBMolecule(object):
 
         # Molecule name
         self.molecule = pdb_file
-        self.warnings = []
+        self.warnings = set()
         # If an offset is provided, apply this
         self.offset = np.array(offset)
         if np.count_nonzero(self.offset) > 0:
@@ -62,7 +62,7 @@ class PDBMolecule(object):
         ''' Creates a Povray Sphere object representing an atom '''
         # Check if atom is defined in the models module
         if element.name not in povray.atom_colors:
-            self.warnings.append(element.name)
+            self.warnings.add(element.name)
 
         if self.model:
             atom_model = self.model
@@ -85,7 +85,7 @@ class PDBMolecule(object):
             print("Warning; the following atoms are not defined in the 'models.py' module: \n\t'",
                   ", ".join(self.warnings), "'\t", sep='')
             # Clear warnings
-            self.warnings=[]
+            self.warnings=set()
 
     def _update_render(self, offset=[0, 0, 0]):
         ''' Updates the render without re-applying the labels '''
@@ -112,25 +112,19 @@ class PDBMolecule(object):
         ''' Set render specific options for the atoms (i.e. reflection) '''
         self.model = model
 
-    def move_offset(self, axes, v):
+    def move_offset(self, pos):
         ''' Move the molecule - and thus each individual atom - on the given axes by vector v '''
-        coords = np.array([0, 0, 0])
-        if len(v) == 1:
-            try:
-                # Move on a single axis
-                coords[np.nonzero(axes)] = v
-                for atom in self.atoms:
-                    atom.x += coords[0]
-                    atom.y += coords[1]
-                    atom.z += coords[2]
-            except IndexError:
-                pass
-        else:
-            # Move on multiple axes
-            for atom in self.atoms:
-                atom.x += axes[0] * v[0]
-                atom.y += axes[1] * v[1]
-                atom.z += axes[2] * v[2]
+        # Move on multiple axes
+        for atom in self.atoms:
+            atom.x += pos[0]
+            atom.y += pos[1]
+            atom.z += pos[2]
+
+        # Calculate the new center of mass
+        self.center = self._center_of_mass()
+
+        # Regenerate the molecule
+        self.render_molecule()
 
     def move_to(self, pos):
         ''' Move the center of the molecule to the position pos '''
