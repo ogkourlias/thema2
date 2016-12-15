@@ -23,7 +23,7 @@ class PDBMolecule(object):
 
         # Molecule name
         self.molecule = pdb_file
-        
+        self.warnings = []
         # If an offset is provided, apply this
         self.offset = np.array(offset)
         if np.count_nonzero(self.offset) > 0:
@@ -60,6 +60,10 @@ class PDBMolecule(object):
 
     def _get_atom(self, element, offset):
         ''' Creates a Povray Sphere object representing an atom '''
+        # Check if atom is defined in the models module
+        if element.name not in povray.atom_colors:
+            self.warnings.append(element.name)
+
         if self.model:
             atom_model = self.model
         else:
@@ -75,6 +79,13 @@ class PDBMolecule(object):
         if self.show_index:
             self.show_label(camera=self.camera, name=False)
         self.povray_molecule = [self._get_atom(a, offset) for a in self.atoms]
+
+        # Warn if unknown atoms are found
+        if len(self.warnings) > 0:
+            print("Warning; the following atoms are not defined in the 'models.py' module: \n\t'",
+                  ", ".join(self.warnings), "'\t", sep='')
+            # Clear warnings
+            self.warnings=[]
 
     def _update_render(self, offset=[0, 0, 0]):
         ''' Updates the render without re-applying the labels '''
@@ -296,7 +307,7 @@ class PDBAtom(object):
         #ATOM      1  CA  ORN     1       4.935   1.171   7.983  1.00  0.00      sega
         #XPLOR pdb files do not fully agree with the PDB conventions 
         name = string[12:16].strip()
-        self.name = re.findall('[0-9]*([A-Z]+)[0-9]*', name)[0][0]
+        self.name = ''.join(re.findall('[0-9]*([A-Za-z]+)[0-9]*', name))
         self.x = float(string[30:38].strip())
         self.y = float(string[38:46].strip())
         self.z = float(string[46:54].strip())
