@@ -1,4 +1,4 @@
-from vapory import Sphere, Scene, Text, Pigment, Texture, Finish, Intersection
+from vapory import Sphere, Cylinder, Scene, Text, Pigment, Texture, Finish, Intersection
 from povray import povray, SETTINGS
 from scipy.linalg import expm3, norm
 import numpy as np
@@ -47,9 +47,17 @@ class PDBMolecule(object):
 
     def _parse_pdb(self, fname):
         ''' Read in a PDB file and create an atom object for each ATOM definition '''
+        self.atoms = []
         with open(fname) as pdbfile:
-            self.atoms = [PDBAtom(atom) for atom in pdbfile if atom.startswith('ATOM') |
-                          atom.startswith('HETATM')]
+            for line in pdbfile:
+                if line.startswith('ATOM') | line.startswith('HETATM'):
+                    self.atoms.append(PDBAtom(line))
+                elif line.startswith('CONECT'):
+                    # Splicing the CONECTS like this keep the code compact but
+                    # it limits the amount of atoms to be in the thousands. 
+                    atom_serial = int(line[7:11].strip())-1
+                    atom_bonds = [int(bond)-1 for bond in line[12:].split()]
+                    self.atoms[atom_serial].bonds = atom_bonds            
 
     def _recenter_molecule(self):
         ''' Moves the molecule by a given offset when instatiating the object '''
@@ -180,6 +188,20 @@ class PDBMolecule(object):
         # Regenerate the molecule
         self.render_molecule()
 
+    def scale_atom_distance(self, scale):
+        '''Scales all atom distances using the given scale parameter'''
+        for atom in self.atoms:
+            coordinates = np.array([atom.x, atom.y, atom.z])
+            coordinates *= scale
+            
+            # Set the atom's new coordinates
+            atom.x = coordinates[0]
+            atom.y = coordinates[1]
+            atom.z = coordinates[2]
+
+        # Update the rendering
+        self._update_render()
+
     def show_label(self, camera=povray.default_camera, name=False):
         ''' Shows a label of each atom in the list of atoms by printing either
             its index or atom name on the 'front' of the atom. The position
@@ -244,6 +266,52 @@ class PDBMolecule(object):
         # Add the labels to atoms
         self.povray_molecule += labels
 
+    def show_stick_model(self, scale=1):
+        '''Turns the space filling model into a stick and ball model.
+           The scaling function is used to create distance between atoms
+           which creates the oppertunity to place cylinders between atoms.
+           TODO's:
+           > Making a devision in a molecule work with stick models.
+           > Making the cylinders limited to the radius'
+             of the atoms. As of now they pierce through the atom to reach
+             the atom's central point (it's coordinates)
+           > A function/boolean the reverts the stick model
+             and returns the original van der waals radii.'''
+        #Declaring storage for all cylinders
+        sticks = []
+        #Scale the atom distance using the default (or given) scaling number
+        self.scale_atom_distance(scale)
+
+        for serial, atom in enumerate(self.atoms):
+            #Declare a model that follows the atom's styling guidelines
+            stick_model_a = Texture(Pigment('color', povray.atom_colors.get(atom.name, [0, 1, 1])),
+                                    Finish('phong', 0.3, 'reflection', 0.1))
+            #Iterate through all the atom's bonds
+            for bond in atom.bonds:
+                # In PDB files bonds are displayed twice. Once so A connects to B
+                # and once so B connects to A. Since we only need one cylinder
+                # this simple if-statement prevents overlapping cylinders.
+                if bond > serial:
+                    bond_atom = self.atoms[bond]
+                    # Declare a model that follows the bonded atom's styling guidelines
+                    stick_model_b = Texture(Pigment('color', povray.atom_colors.get(bond_atom.name, [0, 1, 1])),
+                                    Finish('phong', 0.3, 'reflection', 0.1))
+
+                    # Declare a vector to place the cylinder on
+                    A = np.array([atom.x, atom.y, atom.z])
+                    B = np.array([bond_atom.x, bond_atom.y, bond_atom.z])
+                    # Declare the midwaypoint so we can use bi-colored cylinders*
+                    midpoint = (A + B) / 2
+
+                    stick_a = Cylinder(A, midpoint, scale / 3, stick_model_a)
+                    stick_b = Cylinder(midpoint, B, scale / 3, stick_model_b)
+                    sticks.extend((stick_a,stick_b))
+
+        # Update the rendering
+        self._update_render()
+        # Add sticks to the atoms
+        self.povray_molecule += sticks
+        
     def divide(self, atoms, name, offset=[0,0,0]):
         ''' Given a list of atom indices, split the current molecule into two molecules
             where the original one is reduced and a new one is built with the defined
@@ -312,3 +380,5 @@ class PDBAtom(object):
                                  'to be %s from atom name %s' % (self.element, self.name))
         else:
             self.element = string[76:78].strip()
+        #> List of bonded atoms
+        self.bonds = []
