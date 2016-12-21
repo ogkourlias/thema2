@@ -69,16 +69,16 @@ class PDBMolecule(object):
     def _get_atom(self, element, offset):
         ''' Creates a Povray Sphere object representing an atom '''
         # Check if atom is defined in the models module
-        if element.name not in povray.atom_colors:
-            self.warnings.add(element.name)
+        if element.element not in povray.atom_colors:
+            self.warnings.add(element.element)
 
         if self.model:
             atom_model = self.model
         else:
-            atom_model = Texture(Pigment('color', povray.atom_colors.get(element.name, [0, 1, 1])),
+            atom_model = Texture(Pigment('color', povray.atom_colors.get(element.element, [0, 1, 1])),
                                  Finish('phong', 0.9, 'reflection', 0.1))
         return Sphere([element.x + offset[0], element.y + offset[1], element.z + offset[2]], 
-                      povray.atom_sizes.get(element.name, 0.5), atom_model)
+                      povray.atom_sizes.get(element.element, 0.5), atom_model)
 
     def render_molecule(self, offset=[0, 0, 0]):
         ''' Renders a molecule given a list with atoms '''
@@ -355,7 +355,7 @@ class PDBMolecule(object):
 
         structure = []
         for idx, atm in enumerate(self.atoms):
-            structure.append('{}:\t\t{}\t\t{}\t{}\t{}\t'.format(idx, atm.name,
+            structure.append('{}:\t\t{}\t\t{}\t{}\t{}\t'.format(idx, atm.element,
                                                                 format(atm.x, '.2f'),
                                                                 format(atm.y, '.2f'),
                                                                 format(atm.z, '.2f')))
@@ -375,9 +375,9 @@ class PDBAtom(object):
         self.z = float(string[46:54].strip())
         self.warnings = []
         if len(string) < 78:
-            self.element = self.name[0]
+            self.element = string[12:16].strip()
             self.warnings.append('Chemical element name guessed ' +\
-                                 'to be %s from atom name %s' % (self.element, self.name))
+                                 'to be "%s" from atom name "%s"' % (self.element, self.name))
         else:
             self.element = string[76:78].strip()
         #> List of bonded atoms
