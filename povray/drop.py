@@ -84,8 +84,6 @@ def droplet(radius, height, gamma, size=10, shift=0, offset=[0, 0, 0], apl=0.5, 
     total  = drop.linelen + drop.arclen1 + drop.arclen2
     dots   = int(total / apl)
     apl    = total / dots
-    print('dots:', dots)
-    #r = 0.1
 
     linedots = int(drop.linelen / apl)
     line  = w+(np.arange(linedots) + 0.5)*apl
