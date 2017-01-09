@@ -69,7 +69,7 @@ class Droplet:
 
         return
 
-def droplet(radius, height, gamma, size=10, shift=0, offset=[0, 0, 0], apl=0.25, tag=""):
+def droplet(radius, height, gamma, size=10, shift=0, offset=[0, 0, 0], apl=0.5, tag=""):
     """Draw a line of a droplet on/in a membrane"""
 
     drop = Droplet(radius, height+shift, gamma, size)
@@ -84,8 +84,8 @@ def droplet(radius, height, gamma, size=10, shift=0, offset=[0, 0, 0], apl=0.25,
     total  = drop.linelen + drop.arclen1 + drop.arclen2
     dots   = int(total / apl)
     apl    = total / dots
-
-    r = 0.1
+    print('dots:', dots)
+    #r = 0.1
 
     linedots = int(drop.linelen / apl)
     line  = w+(np.arange(linedots) + 0.5)*apl
@@ -126,10 +126,8 @@ def chunks(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n]
 
-def membrane(step, radius, gamma, start, stop, nframes, offset):
-    """ """
-    radius = float(radius)
-    gamma = float(gamma)
+def membrane(step, radius, gamma, start, stop, nframes, offset, size, apl):
+    """ Creates a list of coordinates for a membrane involved in pinocytosis """
     start = float(start)
     stop = float(stop)
     delta = stop - start
@@ -138,5 +136,5 @@ def membrane(step, radius, gamma, start, stop, nframes, offset):
     s = delta / nsteps
     shift = 0.0
     x = -start-step*s
-    coordinates = droplet(radius, x, gamma, offset=offset)
+    coordinates = droplet(radius, x, gamma, offset=offset, size=size, apl=apl)
     return coordinates

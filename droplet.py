@@ -18,9 +18,12 @@ def scene(step):
         -5  : the stop (y-value)
         nframes : number of frames for the simulation
         [0, 2, 0] : the offset to move the membrane around the scene
+        40  : the total length (povray 'units') of the membrane
+        1.0 : the 'apl' defines the space between the coordinates (with size = 40 and apl = 1.0 you get
+              40 coordinates for a straight membrane)
     '''
     nframes = SETTINGS.Duration * SETTINGS.RenderFPS
-    coordinates = drop.membrane(step, 1.5, 1.0, 1.5, -5, nframes, [0, 2, 0])
+    coordinates = drop.membrane(step, 1.5, 1.0, 1.5, -5, nframes, offset=[0, 2, 0], size=80, apl=2.0)
     
     ''' The 'coordinates' is a list containing three-element lists with x- y- and z-coordinates
     that we can use to draw Spheres (this example) or for positioning lipoproteins etc.
@@ -28,14 +31,14 @@ def scene(step):
     spheres = []
     for coord in coordinates:
         # Use the coordinates to place a sphere with radius 0.11
-        spheres.append(Sphere([coord[0], coord[1], coord[2]], 0.11,
-        povray.default_sphere_model))
+        spheres.append(Sphere([coord[0], coord[1], coord[2]], 1,
+                       povray.default_sphere_model))
     
     # The camera looks straight at the membrane otherwise the vesicle looks like an ellipse
-    camera = Camera('location', [0, 0, -10], 'look_at', [0, 0, 0])
+    camera = Camera('location', [0, 0, -50], 'look_at', [0, 0, 0])
     return Scene(camera, objects=[povray.default_light] + spheres)
 
 if __name__ == '__main__':
     # Uncomment to use prototype settings
-    #povray.SETTINGS = load_config('prototype.ini')
+    povray.SETTINGS = load_config('prototype.ini')
     povray.render_scene_to_gif(scene, time=False)
