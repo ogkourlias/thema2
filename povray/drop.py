@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 class Droplet:
     def __init__(self,radius, height, gamma, size=10):
@@ -27,12 +28,12 @@ class Droplet:
         # ... the x-coordinate the cosine,
         # and x**2 + z**2 equals 1 (unit sphere)
         x = np.sqrt(1 - z**2)
-        self.A = np.array((x,z))
+        self.p = np.array((x,z))
         # The center of the other circle lies in the 
         # same direction, but separated by both radii
         # (the circles touch, right)
-        self.B = self.A*(self.radius + self.gamma)
-        self.A[1] -= height
+        self.B = self.p*(self.radius + self.gamma)
+        self.p[1] -= height
         self.B[1] -= height   
 
         # Angle of the half circle that is not drawn
@@ -75,8 +76,9 @@ def droplet(radius, height, gamma, size=10, shift=0, offset=[0, 0, 0], apl=0.5, 
     drop = Droplet(radius, height+shift, gamma, size)
 
     alpha = drop.alpha
-    (x,z) = drop.A
+    (x,z) = drop.p
     c = drop.B
+    a = drop.p
 
     w = size - drop.linelen
 
@@ -87,8 +89,10 @@ def droplet(radius, height, gamma, size=10, shift=0, offset=[0, 0, 0], apl=0.5, 
 
     linedots = int(drop.linelen / apl)
     line  = w+(np.arange(linedots) + 0.5)*apl
-    lipids += [u for i in line for u in [i,0,shift,-i,0,shift]]
+    lipids += [u for i in line for u in [i,0,shift,math.degrees(np.pi),
+                                        -i,0,shift,-(math.degrees(-np.pi))]]
 
+    # Circle B (sides)
     if drop.arclen2:
         arc2dots = int(drop.beta * drop.gamma / apl + 0.5)
         if arc2dots:
@@ -97,26 +101,35 @@ def droplet(radius, height, gamma, size=10, shift=0, offset=[0, 0, 0], apl=0.5, 
             arc2x = np.cos(arc2)*drop.gamma + c[0]
             arc2z = np.sin(arc2)*drop.gamma + c[1] + shift
             mask = arc2x >= 0
-            l = [u for i,j in zip(arc2x[mask,],arc2z[mask,]) 
-                       for u in [i,0,j,-i,0,j]]
+            l = [u for i,j in zip(arc2x[mask,],arc2z[mask,])
+                       for u in [i,0,j, math.degrees(math.atan2(c[1]-j, c[0]-i)) + 90,
+                                 -i,0,j, -(math.degrees(math.atan2(c[1]-j, c[0]-i)) + 90)]]       
             lipids += l
 
+    # Main circle ('drop')
     if drop.arclen1:
         arc1dots = int(drop.arclen1 / apl + 0.5)
         if arc1dots:
             angle1 = drop.beta / arc1dots
             arc1 = -0.5*np.pi+(np.arange(arc1dots)+0.5)*angle1
-            arc1x = np.cos(arc1)*drop.radius
-            arc1z = np.sin(arc1)*drop.radius - height
-            l = [u for i,j in zip(arc1x,arc1z) 
-                       for u in [i,0,j,-i,0,j]]
+            arc1x = np.cos(arc1) * drop.radius
+            arc1z = np.sin(arc1) * drop.radius - height
+            l = [u for i,j in zip(arc1x,arc1z)
+                       for u in [i,0,j, math.degrees(math.atan2(a[1]-j, -i)) + 90,
+                                 -i,0,j, -(math.degrees(math.atan2(a[1]-j, -i)) + 90)]]
             lipids += l
+    
+    ''' Circles (B and p) center points
+    lipids += [c[0], 0, c[1] + shift, 0]
+    lipids += [-c[0], 0, c[1] + shift, 0]
+    lipids += [a[0], 0, a[1] + shift, 0]
+    '''
 
     # Return the coordinates for all points in the line
     coordinates = []
-    for l in chunks(lipids, 3):
+    for l in chunks(lipids, 4):
         # Coordinates
-        coordinates.append([l[0] + offset[0], l[2] + offset[1], l[1] + offset[2]])
+        coordinates.append([l[0] + offset[0], l[2] + offset[1], l[1] + offset[2], l[3]])
     return coordinates
 
 def chunks(l, n):
