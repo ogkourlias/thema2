@@ -8,7 +8,7 @@ Uses a mathematical model devised by Dr. T. Wassenaar
 '''
 
 from povray import povray, drop, load_config, SETTINGS
-from vapory import Camera, Scene, Sphere, Cylinder, Pigment
+from vapory import Camera, Scene, Sphere, Cylinder, Pigment, Merge
 import math
 
 def scene(step):
@@ -56,12 +56,15 @@ def scene(step):
             An alternative method would be to use the angle and the Sphere coordinate to calculate
             the Cylinder start- and end-point.
             '''
-            lipos.append(Cylinder([0, -lipo_length, 0],
+            cyl = Cylinder([0, -lipo_length, 0],
                                   [0, lipo_length, 0], 0.5,
-                                  'rotate', [0, 0, coord[3]],
-                                  'translate', [coord[0], coord[1], coord[2]],
-                                  Pigment('color', [1,1,1])))
-
+                                  Pigment('color', [1, 0, 0]))
+            bottom_sphere = Sphere([0, -lipo_length, 0], 1,
+                                  Pigment('color', [1, 0, 0]))
+            top_sphere = Sphere([0, lipo_length, 0], 1,
+                                  Pigment('color', [1, 0, 0]))
+            lipos.append(Merge(cyl, top_sphere, bottom_sphere, 'rotate', [0, 0, coord[3]],
+                                  'translate', [coord[0], coord[1], coord[2]]))
     # The camera looks straight at the membrane otherwise the vesicle looks like an ellipse
     camera = Camera('location', [0, 0, -60], 'look_at', [0, 0, 0])
     return Scene(camera, objects=[povray.default_light] + spheres + lipos)
@@ -69,5 +72,5 @@ def scene(step):
 if __name__ == '__main__':
     # Uncomment to use prototype settings
     SETTINGS = povray.SETTINGS = load_config('prototype.ini')
-    #povray.make_frame(60, scene, time=False)
-    povray.render_scene_to_gif(scene, time=False)
+    povray.make_frame(40, scene, time=False)
+    #povray.render_scene_to_gif(scene, time=False)
