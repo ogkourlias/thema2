@@ -11,7 +11,7 @@ from pathos.multiprocessing import ProcessingPool as Pool
 from moviepy.editor import ImageSequenceClip
 from tempfile import mkdtemp
 from glob import glob
-from povray import SETTINGS, logger
+from pypovray import SETTINGS, logger
 from distutils import util
 
 

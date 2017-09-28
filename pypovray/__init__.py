@@ -1,5 +1,5 @@
 import logging
-from povray import config
+from pypovray import config
 
 # Default configuration file located in the project root
 DEFAULT_CONFIG = 'default.ini'

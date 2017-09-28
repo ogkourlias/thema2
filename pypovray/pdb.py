@@ -7,8 +7,8 @@ import math
 import re
 import numpy as np
 from vapory.vapory import Sphere, Cylinder, Text, Pigment, Texture, Finish, Intersection
-from povray import SETTINGS, logger
-from povray.models import atom_colors, atom_sizes, text_model
+from pypovray import SETTINGS, logger
+from pypovray.models import atom_colors, atom_sizes, text_model
 from scipy.linalg import expm3, norm
 
 
