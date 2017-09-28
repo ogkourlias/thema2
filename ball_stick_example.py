@@ -1,31 +1,37 @@
 #!/usr/bin/env python3
-"""
-Showing an example of the show stick model function in use.
-"""
 
-#IMPORTS
-from povray import povray, SETTINGS, pdb
-from vapory import Scene
+""" Example of the ball-and-stick model for rendering a molecule from a PDB file. """
+
+from povray import povray, SETTINGS, pdb, models
+from vapory.vapory import Scene
 from math import pi
 
-#META
 __author__ = 'Niels van der Vegt'
 
+VIAGRA = None
+
+
 def molecule():
-    global viagra
-    viagra = pdb.PDBMolecule('{}/pdb/viagra.pdb'.format(SETTINGS.AppLocation), center = True)
-    viagra.move_offset([0,1,0])
-    viagra.scale_atom_distance(1.75)
+    """ Creates a molecule for rendering """
+    global VIAGRA
+    VIAGRA = pdb.PDBMolecule('{}/pdb/viagra.pdb'.format(SETTINGS.AppLocation), center=True)
+    VIAGRA.move_offset([0, 1, 0])
+    VIAGRA.scale_atom_distance(1.75)
+
+
 def scene(step):
     rotate_coo = pi * 2 / 180
-    viagra.rotate([0,1,0], rotate_coo)
-    viagra.show_stick_model()
-    return Scene(povray.default_camera,
-                 objects = [povray.default_light] + viagra.povray_molecule)
+    VIAGRA.rotate([0, 1, 0], rotate_coo)
+    # Change model to ball-and-stick
+    VIAGRA.show_stick_model()
+    return Scene(models.default_camera,
+                 objects=[models.default_light] + VIAGRA.povray_molecule)
+
 
 def main():
     molecule()
-    povray.render_scene_to_mp4(scene, time=False)
-    
+    povray.render_scene_to_mp4(scene)
+
+
 main()
 
