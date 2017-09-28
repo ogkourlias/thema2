@@ -9,7 +9,7 @@ To install the requirements (moviepy, ffmpy and vapory), use:
 import argparse
 import sys
 from math import sin, cos, pi, sqrt
-from povray import povray, SETTINGS
+from pypovray import pypovray, SETTINGS
 from vapory.vapory import *
 
 # Scene Global Settings
@@ -100,7 +100,7 @@ def main(args):
     """ Runs the simulation """
     if args.time:
         # User entered the specific timepoint to render (in seconds)
-        povray.render_scene_to_png(scene, args.time)
+        pypovray.render_scene_to_png(scene, args.time)
     else:
         # No output file type and no specific time, exit
         if not args.gif and not args.mp4:
@@ -108,9 +108,9 @@ def main(args):
             sys.exit('\nPlease specify either a specific time point or output format for a movie file')
         # Render a movie, depending on output type selected (both files is possible)
         if args.gif:
-            povray.render_scene_to_gif(scene)
+            pypovray.render_scene_to_gif(scene)
         if args.mp4:
-            povray.render_scene_to_mp4(scene)
+            pypovray.render_scene_to_mp4(scene)
     return 0
 
 

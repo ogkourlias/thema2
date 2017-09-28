@@ -14,7 +14,7 @@ __status__ = "Template"
 __version__ = "2017.2"
 
 import math
-from povray import povray, pdb, models
+from pypovray import pypovray, pdb, models
 from vapory.vapory import Scene, LightSource
 
 ATP = RAD_PER_SCENE = FRONT_LIGHT = None
@@ -65,4 +65,4 @@ if __name__ == '__main__':
     scene_objects()
 
     # Render a single frame
-    povray.render_scene_to_png(scene)
+    pypovray.render_scene_to_png(scene)

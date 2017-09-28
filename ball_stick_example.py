@@ -2,7 +2,7 @@
 
 """ Example of the ball-and-stick model for rendering a molecule from a PDB file. """
 
-from povray import povray, SETTINGS, pdb, models
+from pypovray import pypovray, SETTINGS, pdb, models
 from vapory.vapory import Scene
 from math import pi
 
@@ -30,7 +30,7 @@ def scene(step):
 
 def main():
     molecule()
-    povray.render_scene_to_mp4(scene)
+    pypovray.render_scene_to_mp4(scene)
 
 
 main()

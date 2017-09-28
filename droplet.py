@@ -7,7 +7,7 @@ Uses a mathematical model devised by Dr. T. Wassenaar
     see povray/drop.py
 """
 
-from povray import povray, drop, load_config, SETTINGS
+from pypovray import pypovray, drop, load_config, SETTINGS, models
 from vapory.vapory import Camera, Scene, Sphere, Cylinder, Pigment, Merge
 
 
@@ -67,10 +67,11 @@ def scene(step):
                                'translate', [coord[0], coord[1], coord[2]]))
     # The camera looks straight at the membrane otherwise the vesicle looks like an ellipse
     camera = Camera('location', [0, 0, -60], 'look_at', [0, 0, 0])
-    return Scene(camera, objects=[povray.default_light] + spheres + lipos)
+    return Scene(camera, objects=[models.default_light] + spheres + lipos)
 
 
 if __name__ == '__main__':
     # Uncomment to use prototype settings
     #SETTINGS = povray.SETTINGS = load_config('prototype.ini')
-    povray.render_scene_to_gif(scene)
+    #pypovray.render_scene_to_gif(scene)
+    pypovray.render_scene_to_png(scene, 5)

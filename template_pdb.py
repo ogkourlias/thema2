@@ -15,7 +15,7 @@ __version__ = "2017.2"
 import sys
 import math
 import argparse
-from povray import povray, pdb, load_config, models, logger
+from pypovray import pypovray, pdb, load_config, models, logger
 from vapory.vapory import Scene, LightSource
 
 # This program uses globals as the `scene` function requires them at each step
@@ -65,12 +65,12 @@ def main(args):
 
     # Load a user defined configuration file
     if args.config:
-        povray.SETTINGS = load_config(args.config)
+        pypovray.SETTINGS = load_config(args.config)
     if args.time:
         # Create objects for the scene (i.e. parse PDB files)
         scene_objects()
         # User entered the specific timepoint to render (in seconds)
-        povray.render_scene_to_png(scene, args.time)
+        pypovray.render_scene_to_png(scene, args.time)
     else:
         # No output file type and no specific time, exit
         if not args.gif and not args.mp4:
@@ -82,9 +82,9 @@ def main(args):
             scene_objects()
         # Render a movie, depending on output type selected (both files is possible)
         if args.gif:
-            povray.render_scene_to_gif(scene)
+            pypovray.render_scene_to_gif(scene)
         if args.mp4:
-            povray.render_scene_to_mp4(scene)
+            pypovray.render_scene_to_mp4(scene)
     return 0
 
 

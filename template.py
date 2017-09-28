@@ -13,7 +13,7 @@ __status__ = "Template"
 __version__ = "2017.2"
 
 import sys
-from povray import povray, SETTINGS, models, logger
+from pypovray import pypovray, SETTINGS, models, logger
 from vapory.vapory import Sphere, Scene
 
 
@@ -49,10 +49,10 @@ def scene(step):
 
 def main(args):
     """ Main function performing the rendering """
-    povray.render_scene_to_mp4(scene)
+    pypovray.render_scene_to_mp4(scene)
 
     # (example) render a single PNG image given a step number
-    #povray.render_scene_to_png(scene, 10)
+    #pypovray.render_scene_to_png(scene, 10)
 
     return 0
 
