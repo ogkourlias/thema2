@@ -1,5 +1,5 @@
-import numpy as np
 import math
+import numpy as np
 
 class Droplet:
     def __init__(self,radius, height, gamma, size=10):
