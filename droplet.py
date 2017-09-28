@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 
-'''
+"""
 Demonstrates how extracellular elements can enter a membrane through pinocytosis
 
 Uses a mathematical model devised by Dr. T. Wassenaar
     see povray/drop.py
-'''
+"""
 
 from povray import povray, drop, load_config, SETTINGS
-from vapory import Camera, Scene, Sphere, Cylinder, Pigment, Merge
-import math
+from vapory.vapory import Camera, Scene, Sphere, Cylinder, Pigment, Merge
+
 
 def scene(step):
-    ''' Gets the coordinates of a (variable) number of points on the membrane
+    """ Gets the coordinates of a (variable) number of points on the membrane
     Arguments given to the membrane function are:
         step: the current step (frame number)
         10  : the radius of the circle falling through the membrane
@@ -27,7 +27,7 @@ def scene(step):
 
     When increasing the 'size' and 'apl' parameters remember to also increase the 'radius', 'gamma'
     and 'start/stop' values accordingly.
-    '''
+    """
     nframes = SETTINGS.Duration * SETTINGS.RenderFPS
     coordinates = drop.membrane(step, 10, 5, 11, -40, nframes, offset=[0, 15, 0], size=80, apl=2.0)
 
@@ -57,20 +57,20 @@ def scene(step):
             the Cylinder start- and end-point.
             '''
             cyl = Cylinder([0, -lipo_length, 0],
-                                  [0, lipo_length, 0], 0.5,
-                                  Pigment('color', [1, 0, 0]))
+                           [0, lipo_length, 0], 0.5,
+                           Pigment('color', [1, 0, 0]))
             bottom_sphere = Sphere([0, -lipo_length, 0], 1,
-                                  Pigment('color', [1, 0, 0]))
+                                   Pigment('color', [1, 0, 0]))
             top_sphere = Sphere([0, lipo_length, 0], 1,
-                                  Pigment('color', [1, 0, 0]))
+                                Pigment('color', [1, 0, 0]))
             lipos.append(Merge(cyl, top_sphere, bottom_sphere, 'rotate', [0, 0, coord[3]],
-                                  'translate', [coord[0], coord[1], coord[2]]))
+                               'translate', [coord[0], coord[1], coord[2]]))
     # The camera looks straight at the membrane otherwise the vesicle looks like an ellipse
     camera = Camera('location', [0, 0, -60], 'look_at', [0, 0, 0])
     return Scene(camera, objects=[povray.default_light] + spheres + lipos)
 
+
 if __name__ == '__main__':
     # Uncomment to use prototype settings
-    SETTINGS = povray.SETTINGS = load_config('prototype.ini')
-    povray.make_frame(40, scene, time=False)
-    #povray.render_scene_to_gif(scene, time=False)
+    #SETTINGS = povray.SETTINGS = load_config('prototype.ini')
+    povray.render_scene_to_gif(scene)
