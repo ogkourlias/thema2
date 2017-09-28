@@ -39,10 +39,10 @@
     A list of known issues with workarounds. Work in progress.
 
 The `pypovray` project functions as a translation layer between `Python`- and `Povray`-code as shown in the images below, where:
-* the `povray` library from this repository is used to configure the project (render settings, file locations) as well as PDB-file rendering and
+* the `pypovray` library from this repository is used to configure the project (render settings, file locations) as well as PDB-file rendering and
 * the [Vapory library](http://zulko.github.io/blog/2014/11/13/things-you-can-do-with-python-and-pov-ray/) is used to translate the *Scene* constructed in `Python` code to actual `Povray` code.
 
-![pypovray library](https://bitbucket.org/mkempenaar/pypovray/raw/master/manual/files/pypovray.png)
+![pypovray library](https://bitbucket.org/mkempenaar/pypovray/raw/master/manual/files/pypovray_2017.png)
 
 These code snippets show a single `Sphere` object placed in a `Scene` combined with a `Camera` and `LightSource`:
 
