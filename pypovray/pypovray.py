@@ -13,7 +13,7 @@ from tempfile import mkdtemp
 from glob import glob
 from pypovray import SETTINGS, logger
 from distutils import util
-
+from math import ceil
 
 def render_scene_to_png(scene, frame_id=0):
     """ Renders a single frame given the `scene` function object and either a time in seconds
@@ -34,6 +34,13 @@ def render_scene_to_gif(scene):
         logger.error('["%s"] - Not simulating; output file already exists.',
                      sys._getframe().f_code.co_name)
         return
+
+    if _check_rendered_images():
+        logger.error('["%s"] - Not simulating; output image file(s) already exist.',
+                     sys._getframe().f_code.co_name)
+        return
+
+
     # Render the scenes (creates PNG images in the SETTINGS.OutputImageDir folder)
     _render_scene(scene)
 
@@ -72,7 +79,7 @@ def _render_scene(scene):
     #_remove_folder_contents(SETTINGS.OutputImageDir)
 
     # Calculate the time per frame (i.e. evaluate expression from config file)
-    nframes = eval(SETTINGS.NumberFrames)
+    nframes = ceil(eval(SETTINGS.NumberFrames))
 
     # Render each scene using a thread pool or single-threaded
     if util.strtobool(SETTINGS.UsePool):
@@ -161,13 +168,12 @@ def _run_ffmpeg():
     ff = ffmpy.FFmpeg(
         # Input is a pattern for all image files ordered by number (padded)
         inputs={'': '-framerate {} -pattern_type glob -i {}/{}_*.png'.format(
-            SETTINGS.MovieFPS,
+            SETTINGS.RenderFPS,
             SETTINGS.OutputImageDir,
             SETTINGS.OutputPrefix)},
         outputs={'{}/{}.mp4'.format(SETTINGS.OutputMovieDir,
                                     SETTINGS.OutputPrefix):
-                     '-c:v libx264 -r 30 -crf 2 -pix_fmt yuv420p ' +
-                     '-loglevel warning'}
+                     '-c:v libx264 -r {} -crf 2 -pix_fmt yuv420p -loglevel warning'.format(SETTINGS.MovieFPS)}
     )
     # Run ffmpeg and create output movie file
     logger.info('["%s"] - ffmpeg command: "%s"', sys._getframe().f_code.co_name, ff.cmd)

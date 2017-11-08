@@ -3,14 +3,14 @@ Reads a configuration file containing settings for the package
 """
 import configparser
 
-
 class Config(object):
     """ Exposes all settings listed in a valid configuration file (*.ini) as
         object attributes. Use as Config.setting, i.e. Config.Quality """
 
     def __init__(self, config_file):
+        self.config_file = config_file
         self.config = configparser.ConfigParser()
-        self.config.read(config_file)
+        self.config.read(self.config_file)
 
     def __getattr__(self, key):
         setting_value = [self.config[section].get(key)
@@ -24,6 +24,15 @@ class Config(object):
             return True
         else:
             return self._converted_value(setting_value)
+
+    def __str__(self):
+        print(self.__dict__)
+        options = ["Settings loaded from '{}':".format(self.config_file)]
+        for section in self.config.sections():
+            options.append("\tSection: {}".format(section))
+            for option in self.config.options(section):
+                options.append("\t\t{}: {}".format(option, self.config.get(section, option)))
+        return '\n'.join(options)
 
     @staticmethod
     def _is_boolean(setting_value):
