@@ -9,7 +9,7 @@ import numpy as np
 from vapory.vapory import Sphere, Cylinder, Text, Pigment, Texture, Finish, Intersection
 from pypovray import SETTINGS, logger
 from pypovray.models import atom_colors, atom_sizes, text_model
-from scipy.linalg import expm3, norm
+from scipy.linalg import expm, norm
 
 
 class PDBMolecule(object):
@@ -168,7 +168,7 @@ class PDBMolecule(object):
         # Regenerate the molecule
         self.render_molecule()
 
-    def rotate_by_step(self, axis, theta, step, time=True):
+    def rotate_by_step(self, axis, theta, step, time=False):
         """ Rotates the molecule around a given axis with angle theta (radians)
             but always resets the molecule to its original rotation first which
             makes it usable in a multi-threaded environment. """
@@ -337,7 +337,7 @@ class PDBMolecule(object):
             v:     vector, original object coordinates
         """
         # Compute the matrix exponential using Taylor series
-        M0 = expm3(np.cross(np.eye(3), axis/norm(axis)*theta))
+        M0 = expm(np.cross(np.eye(3), axis/norm(axis)*theta))
         # Multiply the rotation matrix with the vector v
         return np.dot(M0, v)
 
