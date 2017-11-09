@@ -10,13 +10,13 @@ Uses a number of pre-defined Povray objects to simplify scene building
 
 __author__ = "Marcel Kempenaar"
 __status__ = "Template"
-__version__ = "2017.2"
+__version__ = "2017.3"
 
 import sys
 import math
 import argparse
 from pypovray import pypovray, pdb, load_config, models, logger
-from vapory.vapory import Scene, LightSource
+from vapory import Scene, LightSource
 
 # This program uses globals as the `scene` function requires them at each step
 ETHANOL = VIAGRA = BENZENE = RAD_PER_SCENE = FRONT_LIGHT = None
@@ -40,7 +40,7 @@ def scene_objects():
     BENZENE = pdb.PDBMolecule('pdb/benzene.pdb', center=False, offset=[0, 8, -5])
 
 
-def scene(step):
+def frame(step):
     """ Returns the scene at step number (1 step per frame) """
 
     # Rotate the molecules updating its orientation (a persistent modification)
@@ -66,33 +66,33 @@ def main(args):
     # Load a user defined configuration file
     if args.config:
         pypovray.SETTINGS = load_config(args.config)
-    if args.time:
+    if args.frame:
         # Create objects for the scene (i.e. parse PDB files)
         scene_objects()
-        # User entered the specific timepoint to render (in seconds)
-        pypovray.render_scene_to_png(scene, args.time)
+        # User entered the specific frame to render
+        pypovray.render_scene_to_png(frame, args.frame)
     else:
-        # No output file type and no specific time, exit
+        # No output file type and no specific frame, exit
         if not args.gif and not args.mp4:
             parser.print_help()
-            sys.exit('\nPlease specify either a specific time point or ' +
+            sys.exit('\nPlease specify either a specific frame number or ' +
                      'output format for a movie file')
         else:
             # Create objects for the scene (i.e. parse PDB files)
             scene_objects()
         # Render a movie, depending on output type selected (both files is possible)
         if args.gif:
-            pypovray.render_scene_to_gif(scene)
+            pypovray.render_scene_to_gif(frame)
         if args.mp4:
-            pypovray.render_scene_to_mp4(scene)
+            pypovray.render_scene_to_mp4(frame)
     return 0
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Render PDB files using Python and Povray')
     parser.add_argument('--config', help='Load a configuration file containing pypovray settings')
-    parser.add_argument('--time', type=float,
-                        help='A specific time (T) in seconds to render ' +
+    parser.add_argument('--frame', type=int,
+                        help='A specific frame (number) to render ' +
                         '(single image output file)')
     parser.add_argument('--gif', action="store_true", default=False,
                         help='Create a GIF movie file using moviepy. ' +

@@ -6,7 +6,7 @@ import numpy as np
 default_camera       = Camera('location', [0, 8, -26], 'look_at', [0, 2, -5])
 floor_camera         = Camera('location', [0, 5, -22], 'look_at', [0, 2, -3])
 # Lights
-default_light        = LightSource([2, 8, -20], 'color', np.array([1, 1, 1]) * 0.7)
+default_light        = LightSource([2, 8, -20], 0.8)
 default_spots        = [# Top spots
                         LightSource([-10, 12, -10], 0.5),
                         LightSource([10, 12, -10], 0.5),

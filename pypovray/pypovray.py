@@ -16,8 +16,8 @@ from distutils import util
 from math import ceil
 
 def render_scene_to_png(scene, frame_id=0):
-    """ Renders a single frame given the `scene` function object and either a time in seconds
-     or a frame number which is passed to the `scene` function """
+    """ Renders a single frame given the `scene` function object and  a
+    frame number which is passed to the `scene` function """
     folder = _create_tmp_folder()
     _render_frame(scene(frame_id), frame_id)
 

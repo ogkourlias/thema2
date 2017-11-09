@@ -11,26 +11,22 @@ Uses a number of pre-defined Povray objects to simplify scene building
 
 __author__ = "Marcel Kempenaar"
 __status__ = "Template"
-__version__ = "2017.2"
+__version__ = "2017.3"
 
-import math
 from pypovray import pypovray, pdb, models
 from vapory.vapory import Scene, LightSource
 
-ATP = RAD_PER_SCENE = FRONT_LIGHT = None
+ATP = FRONT_LIGHT = None
 
 
 def scene_objects():
     """ Creates molecule objects and any other pre-calculated data """
-    global ATP, RAD_PER_SCENE, FRONT_LIGHT
+    global ATP, FRONT_LIGHT
 
     FRONT_LIGHT = LightSource([0, 5, -29], 'color', [1, 1, 1],
                               'fade_distance', 15, 'fade_power', 2,
                               'area_light', 3, 3, 12, 12,
                               'circular orient adaptive', 0)
-
-    # Calculate the radians per scene
-    RAD_PER_SCENE = (math.pi / 180) * 3
 
     # Read in a PDB file and construct a molecule
     ATP = pdb.PDBMolecule('pdb/ATP_ideal.pdb', center=False)
@@ -40,7 +36,7 @@ def scene_objects():
     ATP.rotate([0, 1, 1], [0, 1.5, -0.7])
 
 
-def scene(step):
+def frame(step):
     """ Returns the scene at step number (1 step per frame) """
 
     # Create a new molecule by removing a number of atoms from the original molecule
@@ -48,9 +44,9 @@ def scene(step):
     phosphate = ATP.divide([0, 1, 2, 3, 32, 7, 31], 'phosphate', offset=[0, -4, 0])
 
     # Show the names of the atoms by using the 'show_label' method. This method requires
-    # the active camera to aim the text at the 'viewer' to make it readable.
-    ATP.show_label(camera=models.floor_camera, name=False)
-    phosphate.show_label(camera=models.floor_camera, name=False)
+    # the active camera, used to aim the text at the 'viewer' to make it readable.
+    ATP.show_label(camera=models.floor_camera, name=True)
+    phosphate.show_label(camera=models.floor_camera, name=True)
 
     # Return a 'Scene' object containing -all- objects to render, i.e. the camera,
     # lights and in this case, two molecules with its labels.
@@ -65,4 +61,4 @@ if __name__ == '__main__':
     scene_objects()
 
     # Render a single frame
-    pypovray.render_scene_to_png(scene)
+    pypovray.render_scene_to_png(frame)
