@@ -6,7 +6,7 @@ a PDB file.
 import math
 import re
 import numpy as np
-from vapory.vapory import Sphere, Cylinder, Text, Pigment, Texture, Finish, Intersection, Union
+from vapory.vapory import Sphere, Cylinder, Text, Pigment, Texture, Finish, Intersection, Difference, Merge
 from pypovray import SETTINGS, logger
 from pypovray.models import atom_colors, atom_sizes, text_model
 from scipy.linalg import expm, norm
@@ -100,8 +100,6 @@ class PDBMolecule(object):
         # Declare a storage list for labels and stick-model sticks.
         self.attachments = []
 
-        if self.show_sticks:
-            self.show_stick_model()
         if self.show_name:
             self.show_label(camera=self.camera, name=True)
         if self.show_index:
@@ -365,19 +363,23 @@ class PDBMolecule(object):
                 # In this case we want to find the point where our vector intersects with atom A
                 # or atom B their radii respectively. We simply move the distance of the atom's
                 # radius along the vector.
-                A_intersect = A + (atom_sizes.get(atom.name, 0.5) * unit_vector)
-                B_intersect = B - (atom_sizes.get(bond_atom.name, 0.5) * unit_vector)
+                A_intersect = A + (atom_radius * unit_vector)
+                B_intersect = B - (bond_atom_radius * unit_vector)
                 # Calculate the 'true' midpoint between the spheres: the middle point of the
                 # space in between the two atoms.
                 midpoint = (A_intersect + B_intersect) / 2
 
+                # Create two spheres acting as reference/dummy atoms, using the radii of both atoms.
+                sphere_a = Sphere(A, atom_radius)
+                sphere_b = Sphere(B, bond_atom_radius)
                 # Create the cylinders ranging from the midpoint to each of the atoms' centers.
                 stick_a = Cylinder(midpoint, A, stick_radius, stick_a_model)
                 stick_b = Cylinder(midpoint, B, stick_radius, stick_b_model)
 
-                # Union the sticks to form one cyclinder representing a single bond, then add it
-                # to the list of bonds/sticks.
-                sticks.append(Union(stick_a, stick_b))
+                # Find the difference between the sticks and the reference spheres. Removes parts
+                # of the cylinder/stick that would pierce the atoms.
+                stick = Difference(stick_a, stick_b, sphere_a, sphere_b)
+                sticks.append(stick)
 
         # Add sticks to the list of objects to render.
         self.attachments += sticks

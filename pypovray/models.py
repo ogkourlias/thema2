@@ -24,7 +24,7 @@ checkered_ground     = Plane([0, 1, 0], -1,
 # Models
 default_sphere_model = Texture(Pigment('color', [0.9, 0.05, 0.05], 'filter', 0.7),
                                Finish('phong', 0.6, 'reflection', 0.4))
-text_model           = Texture(Pigment('color', 'Gold'),
+text_model           = Texture(Pigment('color', [0.8, 0.498039, 0.196078]),
                                Finish('phong', 0.6, 'reflection', 0.4))
 
 # Static atom definitions
