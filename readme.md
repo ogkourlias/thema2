@@ -8,7 +8,7 @@
       
     This short document describes how to get the required software (mainly, this Python package), configure it and run one of the included examples on the Bioinformatics computer network. At the bottom of the document is a section on how to do this on your own computer.
 
-* ###[Basic usage of PyPovray](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/povray_basic.ipynb)
+* ###[Basic usage of PyPovray](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/pypovray_basic.ipynb)
 
     **Basic Povray Simulation Example**  
       
@@ -26,7 +26,7 @@
     
     *In Development - manual and assignments for creating animations using complex molecules loaded from PDB files*
 
-* ###[Povray Objects and Styling](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/povray_objects.ipynb)
+* ###[Povray Objects and Styling](http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/pypovray_objects.ipynb)
 
     **Povray Objects, Styling and other modifiers**
 
