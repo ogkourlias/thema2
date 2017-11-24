@@ -11857,7 +11857,7 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The statement above shows that we provide two arguments to the <code>Scene</code> object, a <a href="http://www.povray.org/documentation/view/3.7.0/246/"><code>camera</code></a> and a <em>lightsource</em>. These two arguments are required if we want to render anything, refer to online explaination of ray-tracing to see why.</p>
-<p>We specify the camera by using <code>povray.default_camera</code> which is a predefined camera that you <em>can</em> use. Let's look at how this is defined in the <a href="https://bitbucket.org/mkempenaar/povray_simulation/raw/master/povray/models.py"><code>models</code></a> module of the <code>povray</code> package:</p>
+<p>We specify the camera by using <code>povray.default_camera</code> which is a predefined camera that you <em>can</em> use. Let's look at how this is defined in the <a href="https://bitbucket.org/mkempenaar/povray_simulation/raw/master/pypovray/models.py"><code>models</code></a> module of the <code>povray</code> package:</p>
 
 </div>
 </div>
@@ -11963,7 +11963,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>For now it is <strong>not</strong> important to understand <em>any</em> of this code as it will all be explained later and can be viewed for reference in the <a href="http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/povray_objects.ipynb">Povray Objects and Styling</a> manual. That is also the reason why this (and some other) <em>styles</em> can be imported for easy use. For completeness sake though here is a short description:</p>
+<p>For now it is <strong>not</strong> important to understand <em>any</em> of this code as it will all be explained later and can be viewed for reference in the <a href="http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/pypovray_objects.ipynb">Povray Objects and Styling</a> manual. That is also the reason why this (and some other) <em>styles</em> can be imported for easy use. For completeness sake though here is a short description:</p>
 <blockquote><p>This <em>model</em> defines a <em>Texture</em> that can be applied to any object (i.e. a sphere, cylinder, box, etc.). A texture is used to change the look of such an object going further than just using a different color. For instance, here we first  define a color<strong>*</strong>, make it partly transparent (with the <code>filter</code> argument), a <a href="https://en.wikipedia.org/wiki/Phong_shading"><code>phong</code> highlighting</a> and the amount of light <code>reflection</code>.</p>
 <p><strong> * </strong>Colors are defined with a three-element list specifying the <a href="http://www.f-lohmueller.de/pov_tut/tex/tex_110e.htm"><code>rgb</code></a> (red, green, blue) colors where each number ranges from <code>0</code> to <code>1</code> where <code>1</code> means <code>100%</code>. In this example the sphere will be 90% ('0.9') red mixed with 5% ('0.05') green and blue.</p>
 </blockquote>
