@@ -15,11 +15,20 @@ from pypovray import SETTINGS, logger
 from distutils import util
 from math import ceil
 
-def render_scene_to_png(scene, frame_id=0):
-    """ Renders a single frame given the `scene` function object and  a
-    frame number which is passed to the `scene` function """
+
+def render_scene_to_png(frame, frame_id=0):
+    """ Renders one or more frames given the `frame` function object and  a
+    frame number (int, list or range) which is passed to the `frame` function """
     folder = _create_tmp_folder()
-    _render_frame(scene(frame_id), frame_id)
+    if isinstance(frame_id, int):
+        _render_frame(frame(frame_id), frame_id)
+    elif isinstance(frame_id, list) or isinstance(frame_id, range):
+        for id in frame_id:
+            _render_frame(frame(id), id)
+    else:
+        logger.error('["%s"] - Not simulating; given frame number(s) not of integer or list type.',
+                     sys._getframe().f_code.co_name)
+        return
 
     if SETTINGS.LogLevel != "DEBUG":
         shutil.rmtree(folder)
@@ -39,7 +48,6 @@ def render_scene_to_gif(scene):
         logger.error('["%s"] - Not simulating; output image file(s) already exist.',
                      sys._getframe().f_code.co_name)
         return
-
 
     # Render the scenes (creates PNG images in the SETTINGS.OutputImageDir folder)
     _render_scene(scene)
