@@ -12,7 +12,7 @@ Uses a number of pre-defined Povray objects to simplify scene building
 
 __author__ = "Marcel Kempenaar"
 __status__ = "Template"
-__version__ = "2017.2"
+__version__ = "2017.3"
 
 import math
 import copy
@@ -39,7 +39,7 @@ def scene_objects():
     ETHANOL = pdb.PDBMolecule('pdb/ethanol.pdb', center=False, offset=[-10, 8, -5])
 
 
-def scene(step):
+def frame(step):
     """ Returns the scene at step number (1 step per frame) """
     logger.info("@ Step %d", step)
 
@@ -86,7 +86,7 @@ if __name__ == '__main__':
     scene_objects()
 
     # Render as an MP4 movie
-    pypovray.render_scene_to_gif(scene)
+    pypovray.render_scene_to_mp4(frame, range(20, 40))
 
     # Timing for running the current simulation including creating the movie:
     #  |  Single-thread (s)  |  Multi-threaded (s) |

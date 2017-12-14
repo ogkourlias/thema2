@@ -19,7 +19,8 @@ from vapory import Sphere, Scene
 
 def frame(step):
     """ Returns the scene at step number (1 step per frame) """
-    logger.info(" @Step: %s", step)
+    #logger.info(" @Step: %s", step)
+    logger.info(" @Time: %.3fs, Step: %d", step/eval(SETTINGS.NumberFrames), step)
     # Getting the total number of frames, see the configuration file
     nframes = eval(SETTINGS.NumberFrames)
 
@@ -49,10 +50,11 @@ def frame(step):
 
 def main(args):
     """ Main function performing the rendering """
-    pypovray.render_scene_to_mp4(frame)
+    logger.info(" Total time: %d (frames: %d)", SETTINGS.Duration, eval(SETTINGS.NumberFrames))
+    #pypovray.render_scene_to_mp4(frame)
 
     # (example) render a single PNG image given a step number
-    #pypovray.render_scene_to_png(frame, 10)
+    pypovray.render_scene_to_png(frame, range(10))
 
     return 0
 

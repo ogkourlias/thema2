@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>install_and_configure</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>pypovray_objects</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11775,273 +11775,183 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Installation">Installation<a class="anchor-link" href="#Installation">&#182;</a></h1><p>This short document describes how to get the required software (mainly, this Python package), configure it and run one of the included examples on the <em>Bioinformatics</em> computer network. At the bottom of the document is a section on how to do this on your own computer.</p>
-<h2 id="Getting-the-Python-package">Getting the Python package<a class="anchor-link" href="#Getting-the-Python-package">&#182;</a></h2><p>The <strong>pypovray</strong> package is available from the software <em>repository</em> Bitbucket at <a href="https://bitbucket.org/mkempenaar/pypovray">https://bitbucket.org/mkempenaar/pypovray</a>. This repository is used to store the software and track all the updates made to it. This means that as a user you can easily keep the package up to date or even propose changes and additions.</p>
-<p>The repository uses the <strong>Git</strong> software to synchronize changes between developer and the online version and it allows the user to download ('<em>clone</em>') the complete software.</p>
-<p>It is adviced to keep all work done for this project in a single folder, so lets create a new folder (maybe as a sub-folder of <code>~/Themas/Thema02</code> ?) where we will store the downloaded software:</p>
+<h1 id="1-PyPovray-Objects">1 PyPovray Objects<a class="anchor-link" href="#1-PyPovray-Objects">&#182;</a></h1><p>For each of the objects we include a <code>style</code> variable which the official documentation denotes with <code>[OBJECT_MODIFIERS...]</code>. See the <em>Povray Object Styling</em>, chapter 2 below for details on how to style Povray objects. Other <em>Object Modifiers</em> such as <code>scaling</code>, <code>rotating</code>, etc. are demonstrated in chapter 3 below.</p>
+<p>All of the objects shown in this chapter can be imported from the <code>vapory</code> library with their listed name.</p>
+<h2 id="1.1-The-Sphere-Object">1.1 The <code>Sphere</code> Object<a class="anchor-link" href="#1.1-The-Sphere-Object">&#182;</a></h2><p>The <a href="http://www.povray.org/documentation/view/3.6.2/283/">official</a> documentation lists two parameters, the <code>Center</code> and the <code>Radius</code>. The <code>Center</code> is a <em>vector</em> specifying a 3D coordinate. In Python we use a list with three values; <code>[</code><font color='red'>x</font><code>,</code> <font color='blue'>y</font><code>,</code> <font color='green'>z</font><code>]</code> as the coordinates.</p>
+<p><img src="https://bitbucket.org/mkempenaar/pypovray/raw/master/manual/files/object_sphere.png" width="350" /></p>
+<p>The <code>Radius</code> is a single number (<code>float</code>) definining the size of the <code>Sphere</code> where the <em>radius</em> is half the <em>diameter</em>. If for instance we specify a <code>Sphere</code> with the following code:</p>
 
-<pre><code>mkdir project
-cd project
-
-</code></pre>
-<p>The following command will retrieve a full copy of the software package in the <code>project</code> folder named <strong>pypovray</strong>:</p>
-
-<pre><code>git clone https://bitbucket.org/mkempenaar/pypovray.git
+<pre><code>Sphere([2, 5.5, -2], 2, style)
 
 </code></pre>
-<p>This command will show something similar to:</p>
+<p>We get a <code>Sphere</code> located at <code>[</code><font color='red'>2</font><code>,</code> <font color='blue'>5.5</font><code>,</code> <font color='green'>-2</font><code>]</code> with a total size (<em>diameter</em>) of <strong>4</strong>, twice the <em>radius</em>.</p>
+<h2 id="1.2-The-Box-Object">1.2 The <code>Box</code> Object<a class="anchor-link" href="#1.2-The-Box-Object">&#182;</a></h2><p>The <a href="http://www.povray.org/documentation/view/3.6.2/283/">official</a> documentation lists two <code>Corner</code>-parameters as shown by the figure below: <img src="https://bitbucket.org/mkempenaar/pypovray/raw/master/manual/files/object_box.png" width="350" /></p>
+<p>If we want to have a <code>Box</code> of which all sides are <strong>5</strong> long, we could specify it as:</p>
 
-<pre><code>Cloning into 'pypovray'...
-remote: Counting objects: 146, done.
-remote: Compressing objects: 100% (139/139), done.
-remote: Total 146 (delta 62), reused 0 (delta 0)
-Receiving objects: 100% (146/146), 31.65 MiB | 834.00 KiB/s, done.
-Resolving deltas: 100% (62/62), done.
-Checking connectivity... done.
+<pre><code>Box([2, 2, -3], [7, 7, 2], style)
 
 </code></pre>
-<p>indicating that we succesfully got everything we need. Next, move to the newly created <code>pypovray</code> folder and type:</p>
+<p>For all three axis we place <code>Corner_2</code> at distance <strong>3</strong> from <code>Corner_1</code>. To make it a rectangle we could change the <font color='blue'>y</font>-coordinate in <code>Corner_2</code> from 7 to 5 for instance to get a rectangle laying above the floor.</p>
+<h2 id="1.3-The-Cylinder-Object">1.3 The <code>Cylinder</code> Object<a class="anchor-link" href="#1.3-The-Cylinder-Object">&#182;</a></h2><p>The <a href="http://www.povray.org/documentation/view/3.6.0/278/">official</a> documentation shows three parameters, also shown in the following image: <img src="https://bitbucket.org/mkempenaar/pypovray/raw/master/manual/files/object_cylinder.png" width="350" /></p>
+<p>The <code>base</code>- and <code>cap</code>-points are both <em>vectors</em> which we again specify with the three coordinates. The <code>Radius</code> behaves the same as with the <code>Sphere</code> object to define the width of the <code>Cylinder</code>. A <code>Cylinder</code> standing on the 'floor', with a <em>heigth</em> of <strong>6</strong> and a <em>width</em> (2*radius) of <strong>3</strong>:</p>
 
-<pre><code>git status
+<pre><code>Cylinder([0, 0, 0], [0, 6, 0], 3, style)
 
-</code></pre>
-<p>which will show if you have the latest version of the package. Of course, a freshly <em>cloned</em> project will always be up-to-date, but remember this command for the future. We will announce updates that you can download with:</p>
-
-<pre><code>git pull
 
 </code></pre>
-<h4 id="Downloading-Requirement(s)">Downloading Requirement(s)<a class="anchor-link" href="#Downloading-Requirement(s)">&#182;</a></h4><p>The <code>pypovray</code> folder contains <em>almost</em> everything we need, except for one Python package called <code>vapory</code>. Here is a <a href="http://zulko.github.io/blog/2014/11/13/things-you-can-do-with-python-and-pov-ray/">nice informative page</a> about this package and what you can (and partially will) do with it. To install this package, simply execute the <code>setup.sh</code> script:</p>
+<h2 id="1.4-The-Cone-Object">1.4 The <code>Cone</code> Object<a class="anchor-link" href="#1.4-The-Cone-Object">&#182;</a></h2><p>This object takes a total of four arguments according to the <a href="http://www.povray.org/documentation/view/3.6.2/277/">official</a> documentation and shown in the following image: <img src="https://bitbucket.org/mkempenaar/pypovray/raw/master/manual/files/object_cone.png" width="350" /></p>
+<p>The parameters are two <em>sets</em> of values, one for the bottom and one for the top of the <code>Cone</code>. Both <code>Base Points</code> are <em>vectors</em> with the three coordinates and both <code>Radius</code> parameters are used to specify the width of the <em>base</em> (bottom) and <em>cap</em> (top). To create a <code>Cone</code> resting on the 'floor' with a <em>width</em> (2*radius) of <strong>4</strong> pointing upwards with <em>heigth</em> of <strong>5</strong> and a sharp point at its top (by using a cap-<code>Radius</code> of <strong>0</strong>), use:</p>
 
-<pre><code>sh setup.sh
+<pre><code>Cone([0, 0, 0], 4, 
+     [0, 5, 0], 0,
+     style)
 
 </code></pre>
-<p>Just for completeness, this will do another <code>git clone</code> of the Vapory package <a href="https://github.com/Zulko/vapory">from github</a> and add this to the <code>vapory/</code> folder in your project.</p>
-<h1 id="Configuring">Configuring<a class="anchor-link" href="#Configuring">&#182;</a></h1><p>There are a few basic settings we need to change before we are able to run the software. The Python package uses <em>initialization files</em> (<code>.ini</code>) to load a variety of settings using Python's <a href="https://docs.python.org/3/library/configparser.html"><code>configparser</code></a> library. There are two configuration files included with the project; <a href="https://bitbucket.org/mkempenaar/pypovray/raw/master/default.ini"><code>default.ini</code></a> and <a href="https://bitbucket.org/mkempenaar/pypovray/raw/master/prototype.ini"><code>prototype.ini</code></a>. Both files contain exactly the same options but with different values. The idea is that you can generally use the <code>prototype.ini</code> file which creates smaller output images and animations with lower quality to vastly increase rendering speed while the <code>default.ini</code> file creates high-quality output which can take a long time to render. Note that comment lines in these files begin with a semicolon '<code>;</code>'.</p>
-<p>Let's take a look at the first setting that we need to change by opening the <code>default.ini</code> file in an editor of your choice. Line <strong>3</strong> sets the <strong>AppLocation</strong> folder using the <em>absolute</em> (complete) path to your previously created <code>project</code> folder, i.e.: <code>/homes/user/Themas/Thema02/project</code> (do not add a trailing slash). Note that if you want to use the <code>prototype.ini</code> file, you need to change the setting too.</p>
-<p>Move on to the <em>Running an example</em> section below or read on for further details of the configuration file.</p>
-<h2 id="Sections">Sections<a class="anchor-link" href="#Sections">&#182;</a></h2><p>Both configuration files are split into three sections which are detailed below.</p>
-<h3 id="GENERAL">GENERAL<a class="anchor-link" href="#GENERAL">&#182;</a></h3><p>The general-settings section contains settings for paths:</p>
-<table>
-<thead><tr>
-<th style="text-align:center">Setting</th>
-<th style="text-align:center">Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">AppLocation</td>
-<td style="text-align:center">The absolute path to the software location; the folder where the repository is <em>cloned</em> or the ZIP file extracted</td>
-</tr>
-<tr>
-<td style="text-align:center">OutputPrefix</td>
-<td style="text-align:center">All output files (be it images located in the <code>OutputImageDir</code> or a created video in the <code>OutputMovieDir</code> folder) are named with this value as prefix. Default this is <code>simulation</code> which creates images like <code>simulation_000.png</code>, <code>simulation_001.png</code>, etc. and video files like <code>simulation.mp4</code> or <code>simulation.gif</code>.</td>
-</tr>
-<tr>
-<td style="text-align:center">OutputImageDir</td>
-<td style="text-align:center">All (intermediate) image files are placed in this folder. Note that the value references the <code>AppLocation</code> setting indicating a subfolder from where the project is located / cloned. Note that when creating a video as output, this folder <strong>will</strong> be emptied beforehand.</td>
-</tr>
-<tr>
-<td style="text-align:center">OutputMovieDir</td>
-<td style="text-align:center">All resulting video files are placed in this folder. Note that when creating an <strong>MP4</strong> output file, you will need to rename or remove the previous file since it will not be overwritten by default.</td>
-</tr>
-<tr>
-<td style="text-align:center">LogLevel</td>
-<td style="text-align:center">The level of information shown when running your application. Possible options are <code>DEBUG</code>, <code>INFO</code> (default), <code>WARNING</code>, <code>ERROR</code> and <code>CRITICAL</code>.</td>
-</tr>
-</tbody>
-</table>
-<h3 id="RENDER">RENDER<a class="anchor-link" href="#RENDER">&#182;</a></h3><p>Settings in this section control how the image (frame) is rendered:</p>
-<table>
-<thead><tr>
-<th style="text-align:center">Setting</th>
-<th style="text-align:center">Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">ImageWidth</td>
-<td style="text-align:center">The width in pixels of the resulting image</td>
-</tr>
-<tr>
-<td style="text-align:center">ImageHeight</td>
-<td style="text-align:center">The height in pixels of the resulting image</td>
-</tr>
-<tr>
-<td style="text-align:center">Quality</td>
-<td style="text-align:center">The quality of the resulting image. This is a <em>Povray</em> setting so please refer to the <a href="http://www.povray.org/documentation/view/3.6.1/223/">povray manual section 2.1.2.8.1</a> for details on how to choose an appropriate (integer) value.</td>
-</tr>
-<tr>
-<td style="text-align:center">AntiAlias</td>
-<td style="text-align:center">Another <em>Povray</em> setting controlling the amount of anti-aliasing to apply to the output image. The <a href="http://www.povray.org/documentation/view/3.6.1/223/">povray manual, section 2.1.2.8.4</a> describes the Anti-Aliasing feature in-depth, but this setting only controls the <code>Antialias_Threshold</code> setting which can be set to 3.0 (no anti-aliasing) or to any smaller number to enable anti-aliasing and control the amount of super-sampling. Practically, it is disable for prototyping and set to 0.01 for the final rendering.</td>
-</tr>
-<tr>
-<td style="text-align:center">UsePool</td>
-<td style="text-align:center">A boolean setting that can be used to force multi-threaded rendering. As this setting has some implications, see the <a href="http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/pypovray_simulation_2.ipynb">PyPovray Simulation - part 2</a> manual for further details.</td>
-</tr>
-<tr>
-<td style="text-align:center">Workers</td>
-<td style="text-align:center">The amount of <em>threads</em> to use in the pool, often set to the number of CPU-cores in the PC.. See the <em>UsePool</em> setting above.</td>
-</tr>
-</tbody>
-</table>
-<h3 id="SCENE">SCENE<a class="anchor-link" href="#SCENE">&#182;</a></h3><p>The settings in this section specify how the final movie is created:</p>
-<table>
-<thead><tr>
-<th style="text-align:center">Setting</th>
-<th style="text-align:center">Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Duration</td>
-<td style="text-align:center">The duration in seconds of the final output movie.</td>
-</tr>
-<tr>
-<td style="text-align:center">RenderFPS</td>
-<td style="text-align:center">The Frames Per Second (FPS) of the final output movie.</td>
-</tr>
-<tr>
-<td style="text-align:center">FrameTime</td>
-<td style="text-align:center">The time in seconds that each frame takes. If you have a scene taking 1 second (<code>Duration</code>) at 25 FPS (<code>RenderFPS</code>) each frame will take 1 /  25 = <strong>0.04</strong> seconds. The actual value of this setting in this case is actually <code>1 / 25</code> and can be converted in Python to 0.04 using <code>eval(FrameTime)</code>.</td>
-</tr>
-<tr>
-<td style="text-align:center">NumberFrames</td>
-<td style="text-align:center">Another pre-calculated value showing the total number of frames to render, use with <code>eval(NumberFrames)</code>.</td>
-</tr>
-<tr>
-<td style="text-align:center">MovieFPS</td>
-<td style="text-align:center">The <code>MovieFPS</code> is used by the <code>ffmpeg</code> software responsible for creating <em>MP4</em> movie files, independent of the <code>RenderFPS</code> setting.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="Using-the-Settings-in-Python">Using the Settings in Python<a class="anchor-link" href="#Using-the-Settings-in-Python">&#182;</a></h2><p>While not relevant for the installing and configuring subject, we briefly show how to actually use settings from the configuration file and how to switch configuration files in your own code. The following two lines of code shows how to import the settings and print a few of them:</p>
+<h2 id="1.5-The-Plane-Object">1.5 The <code>Plane</code> Object<a class="anchor-link" href="#1.5-The-Plane-Object">&#182;</a></h2><p>This type of object can be used to draw a 'floor' or the 'sky' in a scene as it can easily made to look like it extends <em>indefinately</em>. The <a href="http://www.povray.org/documentation/view/3.6.1/297/">official</a> manual shows two parameters being present; the <code>Normal</code> and the <code>Distance</code>. Please read the manual for details on these arguments, but since this can be rather complex, the following example code places a 'floor' at <font color='blue'>y</font><code>=-1</code>:</p>
+
+<pre><code>Plane([0, 1, 0], -1, style)
+
+</code></pre>
+<h2 id="1.6-The-Text-Object">1.6 The <code>Text</code> Object<a class="anchor-link" href="#1.6-The-Text-Object">&#182;</a></h2><p>This object type is different from the rest since it is not a single object with a certain shape, but we define a "string" which is then <em>extruded</em> in 3D. The <a href="http://www.povray.org/documentation/view/3.6.2/287/">official</a> documentation shows five parameters. The following command shows the text <strong>Hello!</strong> using the <code>timrom</code> font:</p>
+
+<pre><code>Text('ttf', '"timrom.ttf"', '"Hello!"', 1, 0)
+
+</code></pre>
+<p>Note the extra quotes for the second and third arguments. This is needed when we want to use "strings" as arguments for Povray. The arguments are as follows:</p>
+<ul>
+<li><code>'ttf'</code>: to specify that we want to use a <em>TrueType</em> font, which is also the only font-type supported.</li>
+<li><code>'"timrom.ttf"'</code>: the actual font to use, should point to an actual file. This arguments requires extra double quotes!</li>
+<li>'<code>"Hello!"'</code>: the string to show in 3D. This arguments requires extra double quotes!</li>
+<li><code>1</code>: the <em>Thickness</em> of the text or the <em>extrusion-heigth</em>. The amount of depth to give the text.</li>
+<li><code>0</code>: the offset for positioning the text, mostly set to <code>0</code>. Positioning of the text is easier using the <code>translate</code> modifier discussed in section 3.3 below.</li>
+</ul>
+<h2 id="1.6-The-Scene-Object-Collection">1.6 The <code>Scene</code> Object Collection<a class="anchor-link" href="#1.6-The-Scene-Object-Collection">&#182;</a></h2><p>While not really <em>objects</em> compared to a <code>Sphere</code> or a <code>Cylinder</code>, the following objects are used to create the <code>Scene</code> around the objects from the previous sections. An actual <code>Scene</code> is then built using with for instance:</p>
+
+<pre><code>Scene(Camera, objects=[ LightSource, Plane, Background, Sphere ])
+
+</code></pre>
+<p>One more parameter of the <code>Scene</code> object compared to the <code>objects=[]</code> is the <code>included=[]</code>. Povray is shipped with a number of <em>include</em> files that define styles or shapes. The <code>glass.inc</code> file for instance contains colors for representing glass objects named <code>Col_Glass_Winebottle</code>, <code>Col_Glass_Clear</code>, etc. It also contains <code>Finish</code> and <code>Interior</code> examples (see section 2.1 and 2.3 below).</p>
+<h2 id="1.6.1-The-Camera-Object">1.6.1 The <code>Camera</code> Object<a class="anchor-link" href="#1.6.1-The-Camera-Object">&#182;</a></h2><p>The most important object in a <code>Scene</code> is the <code>Camera</code> as this object defines what we will actually <em>see</em>. The <a href="http://www.povray.org/documentation/view/3.6.1/245/">official</a> documentation lists a large number of arguments, but the (official) manual regarding <a href="http://www.povray.org/documentation/view/3.6.1/246/"><em>placing the camera</em></a> explains this more in-depth. The most basic - complete - <code>Camera</code> object can be defined with (compare this with the first example of the <em>placing the camera</em> manual):</p>
+
+<pre><code>Camera('location', [3, 5, -10], 'look_at', [0, 2, 1])
+
+</code></pre>
+<p>These two parameters (the 'location' with its list of coordinates and the 'look_at' with its list of coordinates) are practically all that you need. If something specific is wanted it is best to search and translate the found Povray code to Python code yourself, see for example these <a href="http://www.f-lohmueller.de/pov_tut/camera_light/camera_e2.htm">camera specials</a>.</p>
+<h2 id="1.6.2-The-LightSource-Object">1.6.2 The <code>LightSource</code> Object<a class="anchor-link" href="#1.6.2-The-LightSource-Object">&#182;</a></h2><p>All scenes should include at least one <code>LightSource</code> producing <em>rays</em> for the Povray <em>ray-tracer</em>. The <a href="http://www.povray.org/documentation/view/3.6.0/308/">official</a> documentation lists two actual parameters (<code>Location</code> and <code>Color</code>) and a large number of (type specific) extra modifiers. The <code>pypovray</code> project includes a few <code>LightSources</code> defined as follows in <a href="https://bitbucket.org/mkempenaar/pypovray/raw/master/povray/models.py"><code>models.py</code></a>:</p>
+
+<pre><code>LightSource([2, 8, -20], 'color', [1, 1, 1])
+
+</code></pre>
+<p>This command creates a default type of light, namely a <em>Point</em> light. Other types are for instance a <a href="http://www.povray.org/documentation/view/3.6.0/310/"><code>Spot</code></a>-light, a <a href="http://www.povray.org/documentation/view/3.6.0/311/"><code>Cylindrical</code></a>-light (can be used to simulate a laser), a <a href="http://www.povray.org/documentation/view/3.6.0/312/"><code>Parallel</code></a>-light to simulate the sun, etc.</p>
+<p>The first two parameters are common to all light types:</p>
+<ul>
+<li>the <code>Location</code> vector gives the location of the light and</li>
+<li>the COLOR gives the color and <em>brightness</em> of the light.</li>
+</ul>
+<p>The <code>Color</code> is defined with a list of <code>[</code><font color='red'>R</font><code>,</code> <font color='green'>G</font><code>,</code> <font color='blue'>B</font><code>]</code> (Red-Green-Blue) colors. To get a red-light, we could use <code>[</code><font color='red'>1</font><code>,</code> <font color='green'>0</font><code>,</code> <font color='blue'>0</font><code>]</code> and for a white-light (default) it is <code>[</code><font color='red'>1</font><code>,</code> <font color='green'>1</font><code>,</code> <font color='blue'>1</font><code>]</code>, etc. Besides the color these values also define the brightness. To double the light-output of our white light we could simply use <code>[</code><font color='red'>2</font><code>,</code> <font color='green'>2</font><code>,</code> <font color='blue'>2</font><code>]</code>.</p>
+<p>There is a shortcut for creating white-lights by just defining a single value which is then used for all three colors:</p>
+
+<pre><code>LightSource([2, 8, -20], 2)
+
+</code></pre>
+<p>Mostly it is a bit trial-and-error to get the lighting good, not just the color but also the position. Sometimes it is better to use multiple <code>LightSources</code>. In <a href="http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/pypovray_basic.ipynb"><em>assignment 1</em></a> a single <code>LightSource</code> doesn't really work well, so we could include an extra four <code>LightSources</code> scattered around that are available in the <code>models.py</code> module:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pypovray</span> <span class="k">import</span> <span class="n">SETTINGS</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Image resolution:&#39;</span><span class="p">,</span> <span class="n">SETTINGS</span><span class="o">.</span><span class="n">ImageWidth</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">SETTINGS</span><span class="o">.</span><span class="n">ImageHeight</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">SETTINGS</span><span class="o">.</span><span class="n">Duration</span> <span class="o">*</span> <span class="n">SETTINGS</span><span class="o">.</span><span class="n">RenderFPS</span><span class="p">,</span> <span class="s1">&#39; frames in total (&#39;</span><span class="p">,</span>
-      <span class="nb">eval</span><span class="p">(</span><span class="n">SETTINGS</span><span class="o">.</span><span class="n">FrameTime</span><span class="p">),</span> <span class="s1">&#39;s/frame)&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Definition in `models.py`</span>
+<span class="n">default_lights</span> <span class="o">=</span> <span class="p">[</span><span class="c1"># Top lights</span>
+                  <span class="n">LightSource</span><span class="p">([</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">],</span> <span class="mf">0.5</span><span class="p">),</span>
+                  <span class="n">LightSource</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">],</span> <span class="mf">0.5</span><span class="p">),</span>
+                  <span class="c1"># Bottom lights</span>
+                  <span class="n">LightSource</span><span class="p">([</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">12</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">],</span> <span class="mf">0.5</span><span class="p">),</span>
+                  <span class="n">LightSource</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">12</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">],</span> <span class="mf">0.5</span><span class="p">)]</span>
+
+<span class="c1"># Use these lights (note, in a List()) as follows:</span>
+<span class="n">Scene</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">objects</span><span class="o">=</span><span class="p">[</span><span class="n">povray</span><span class="o">.</span><span class="n">default_light</span><span class="p">,</span> <span class="n">sphere</span><span class="p">,</span> <span class="n">cone</span><span class="p">]</span> <span class="o">+</span> <span class="n">povray</span><span class="o">.</span><span class="n">default_lights</span><span class="p">)</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Image resolution: 1600.0 x 1200.0
-120.0 frames in total (0.05s/frame)
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This example shows that we need to import <code>SETTINGS</code> from the <code>pypovray</code> package. This object holds all defined settings and their values as so called <em><code>attributes</code></em>. To access a setting (i.e. get its <em>value</em>) we use the Python <a href="http://reeborg.ca/docs/oop_py_en/oop.html">dot notation</a> such as <code>SETTINGS.ImageWidth</code> which, when using the <code>default.ini</code> file gives us the value <code>1600.0</code> as demonstrated above.</p>
-<p>Actually, you can also just use <code>print(SETTINGS)</code> to print all loaded settings.</p>
+<h2 id="1.6.3-The-Background-Object">1.6.3 The <code>Background</code> Object<a class="anchor-link" href="#1.6.3-The-Background-Object">&#182;</a></h2><p>As the name implies, this object can be used to change the color of the <code>Background</code>. By default the background of a rendered image is black (<code>[</code><font color='red'>0</font><code>,</code> <font color='green'>0</font><code>,</code> <font color='blue'>0</font><code>]</code>) and we can change this by creating a <code>Background</code> object and supplying it to the <code>Scene</code>:</p>
 
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>One thing you might have noticed is that we do not actually <em>use</em> the sections that are defined in the configuration files. For us it does not matter where a setting is defined in these files, we can just use the dot notation to get its value. This does mean that setting names should be unique, otherwise only the last definition is used.</p>
-<p>To load a different configuration file in your script, use the following code:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pypovray</span> <span class="k">import</span> <span class="n">load_config</span>
-<span class="c1"># Now we overwrite the settings by loading settings from a different file</span>
-<span class="n">SETTINGS</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s1">&#39;prototype.ini&#39;</span><span class="p">)</span>
-<span class="c1"># Print the changed resolution</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Image resolution:&#39;</span><span class="p">,</span> <span class="n">SETTINGS</span><span class="o">.</span><span class="n">ImageWidth</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">SETTINGS</span><span class="o">.</span><span class="n">ImageHeight</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Image resolution: 600.0 x 480.0
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>This requires us to load another function from the <code>pypovray</code> package named <code>load_config</code> which takes the location of an <code>.ini</code> file. You can easily replace this '<em>hardcoded</em>' file name by a command-line argument so that you can dynamically switch when running your script.</p>
-<h2 id="Running-an-example">Running an example<a class="anchor-link" href="#Running-an-example">&#182;</a></h2><p>All other dependencies are already present on our internal network so there is no need to download any other software. If you look at the contents of your <code>pypovray</code> folder you will see a number of Python (<code>.py</code>) files. To run an example that creates a single image, type the following in the terminal:</p>
-
-<pre><code>python3 atp_to_adp.py
+<pre><code>Background([0.8, 0.8, 0.8])
 
 </code></pre>
-<p>This will print a few lines of text to the screen depending on your <code>LogLevel</code> setting and it will take about 10 seconds in total to run. If everything went well, the script created output in the form of an image file named <code>simulation_000.png</code> located in the <code>images</code> folder: <img src="https://bitbucket.org/mkempenaar/pypovray/raw/master/manual/files/atp_to_adp.png" width=400></p>
-<h1 id="Clean-Installation">Clean Installation<a class="anchor-link" href="#Clean-Installation">&#182;</a></h1><p>This is a brief documentation on what is needed to run the software on a system other then those in the Bioinformatics network. How to actually install the requirements other then the Python packages is <strong><em>not</em></strong> given; refer to the documentation of these (free) software packages for specific installation instructions for your operating system.</p>
-<h2 id="Software-requirements">Software requirements<a class="anchor-link" href="#Software-requirements">&#182;</a></h2><p>The following software is required:</p>
-<ul>
-<li>Python3: On Windows, you could use <a href="https://www.continuum.io/anaconda-overview"><code>Anaconda</code></a> which includes Python and a number of packages you will need. For OS X or macOS you can also use this but using <a href="http://brew.sh"><code>homebrew</code></a> is advised (<code>brew install python3</code>)</li>
-<li>FFmpeg: Downloadable from <a href="http://ffmpeg.org">http://ffmpeg.org</a> for most operating systems. The <code>ffmpeg</code> command should be able to run in the terminal (<code>sudo apt-get install ffmpeg</code> on Debian/Ubuntu or <code>brew install ffmpeg</code> on macOS).</li>
-<li>Povray: The <a href="http://www.povray.org/download/">Povray</a> website offers downloads for Windows and <a href="http://www.povray.org/download/linux.php">linux</a>. However for Linux (Ubuntu, Debian) povray is available through the OS <em>package-manager</em>, i.e. <code>sudo apg-get install povray</code>. <code>homebrew</code> for OS X or macOS also includes a <code>povray</code> package installable with <code>brew install povray</code>.</li>
-</ul>
-<p>Besides above software, a number of Python packages is also required. Please read the excellent <em>how-to</em> on Python <a href="http://docs.python-guide.org/en/latest/dev/virtualenvs/"><em><code>Virtual Environments</code></em></a> before proceeding (the use of this technique is optional however). The required packages are listed in the <a href="https://bitbucket.org/mkempenaar/pypovray/raw/master/requirements.txt"><code>requirements.txt</code></a> file and the easiest method of installing all of them is by using the Python package manager <strong><code>pip</code></strong>:</p>
+<p>This will create a slight gray background (remember, <code>[</code><font color='red'>1</font><code>,</code> <font color='green'>1</font><code>,</code> <font color='blue'>1</font><code>]</code> is white).</p>
+<h1 id="2-Povray-Object-Styling">2 Povray Object Styling<a class="anchor-link" href="#2-Povray-Object-Styling">&#182;</a></h1><p>Most of the shown objects in chapter 1 included a <code>style</code> variable and this section will show what this actually is.</p>
+<p>Povray itself comes with a number of files defining colors and styles in <em>include</em> files. On the bioinformatics network systems these files are located at <code>/usr/share/povray-3.7/include/</code>. The sections below sometimes refer to files located here. If you are looking for specific colors for example, look at the contents of the <code>/usr/share/povray-3.7/include/colors.inc</code> file and section <code>2.2.1</code> below on how to use these colors.</p>
+<h2 id="2.1-The-Finish-Style">2.1 The <code>Finish</code> Style<a class="anchor-link" href="#2.1-The-Finish-Style">&#182;</a></h2><p>The <code>Finish</code> properties are used to affect the object surface appearance such as reflection, highlights, roughness, etc. as shown in the <a href="http://www.povray.org/documentation/view/3.6.2/344/">official</a> documentation. We only discuss the two most often used properties; <code>phong</code> and <code>reflection</code>.</p>
+<h3 id="2.1.1-phong">2.1.1 <code>phong</code><a class="anchor-link" href="#2.1.1-phong">&#182;</a></h3><p>The <em>shinyness</em> of an object (<a href="https://en.wikipedia.org/wiki/Phong_shading">Phong shading</a>), see the example image from section <code>2.2.2</code> (green <code>Spheres</code>)</p>
 
-<pre><code>pip3 install -r requirements.txt
+<pre><code>Sphere([0, 0, 0], 1, Pigment('color', [1, 1, 0]), Finish('phong', 0.8))
 
 </code></pre>
-<p>If you only have Python3 installed or when you are using a <em>virtual environment</em>, you can use <code>pip</code> instead of <code>pip3</code>. There are situations where this fails, installing each package separately might fix this. Install the following packages with <code>pip3 install &lt;package_name&gt;</code>, i.e. <code>pip3 install moviepy</code>:</p>
-<ul>
-<li><code>ffmpy</code></li>
-<li><code>moviepy</code></li>
-<li><code>numpy</code></li>
-<li><code>scipy</code></li>
-<li><code>pathos</code></li>
-</ul>
-<p>Once you have these requirements installed, you can proceed with the <em>Getting the Python package</em> section at the top of this page.</p>
+<p><a href="http://www.povray.org/documentation/view/3.6.2/347/">Alternatives</a> are <code>Specular Highlights</code> and <code>Metallic Highlights</code>.</p>
+<h3 id="2.1.2-reflection">2.1.2 <code>reflection</code><a class="anchor-link" href="#2.1.2-reflection">&#182;</a></h3><p>Sets the amount of light reflected on the object with a range of 0 - 1. When set to <code>0.5</code> half the light is reflected. An alternative is the <a href="http://www.povray.org/documentation/view/3.6.2/346/"><code>diffuse</code></a> reflection setting. The <a href="http://www.povray.org/documentation/view/3.6.2/348/">official</a> documentation shows that the <code>reflection</code> has a number of properties such as <code>fallow</code> and <code>metallic</code> controlling the reflection. The reflection can also be <em>tinted</em>, for instance a <code>Sphere</code> that mostly reflects <font color='red'>red</font> light:</p>
 
+<pre><code>Sphere([0, 0, 0], 1,
+       Pigment('color', [1, 1, 0]),     # yellow Sphere
+       Finish('reflection', [1, 0, 0])) # mostly reflecting red
+
+</code></pre>
+<h2 id="2.2-The-Pigment-Style">2.2 The <code>Pigment</code> Style<a class="anchor-link" href="#2.2-The-Pigment-Style">&#182;</a></h2><h3 id="2.2.1-color">2.2.1 <code>color</code><a class="anchor-link" href="#2.2.1-color">&#182;</a></h3><p>The <code>color</code> attribute sets the color of the object using <code>[</code><font color='red'>R</font><code>,</code> <font color='green'>G</font><code>,</code> <font color='blue'>B</font><code>]</code> colors as demonstrated in the <code>LightSource</code> example, section <code>1.6.2</code>.</p>
+<h4 id="The-colors.inc-File">The <code>colors.inc</code> File<a class="anchor-link" href="#The-colors.inc-File">&#182;</a></h4><p>This file defines a large number of colors that you can use which can be easier then playing with the <code>[</code><font color='red'>R</font><code>,</code> <font color='green'>G</font><code>,</code> <font color='blue'>B</font><code>]</code> values. For example:</p>
+<ul>
+<li><code>#declare Aquamarine = color red 0.439216 green 0.858824 blue 0.576471;</code></li>
+<li><code>#declare BlueViolet = color red 0.62352 green 0.372549 blue 0.623529;</code></li>
+<li><code>#declare Brown = color red 0.647059 green 0.164706 blue 0.164706;</code></li>
+<li><code>#declare CadetBlue = color red 0.372549 green 0.623529 blue 0.623529;</code></li>
+<li><code>#declare Coral = color red 1.0 green 0.498039 blue 0.0;</code></li>
+<li><code>#declare CornflowerBlue = color red 0.258824 green 0.258824 blue 0.435294;</code></li>
+<li><code>#declare DarkGreen = color red 0.184314 green 0.309804 blue 0.184314;</code></li>
+<li><code>#declare DarkOliveGreen = color red 0.309804 green 0.309804 blue 0.184314;</code></li>
+</ul>
+<p>This list <em>declares</em> colors with <code>Name = RGB</code> values. In our Python code we can use the color <code>Name</code> in the <code>Pigment</code> style to apply this color. For instance here we color a <code>Sphere</code> with the <code>MediumSeaGreen</code> color:</p>
+
+<pre><code>sphere = Sphere([0, 0, 0], 3, Pigment('color', 'MediumSeaGreen'))
+
+</code></pre>
+<p>To actually use this color we need to make sure that we <em>include</em> the <code>colors.inc</code> file in our code. This is done by adding <code>included=['colors.inc']</code> to the <code>Scene()</code> function call:</p>
+
+<pre><code>return Scene(models.default_camera,
+             objects=[sphere],
+             included=['colors.inc'])
+
+</code></pre>
+<p>Alternatively there are a lot of (<a href="http://www.rapidtables.com/web/color/RGB_Color.htm">online</a>) tools available for creating (mixing) your own colors as you can always just use the RGB values when creating objects.</p>
+<h3 id="2.2.2-transmit-and-filter">2.2.2 <code>transmit</code> and <code>filter</code><a class="anchor-link" href="#2.2.2-transmit-and-filter">&#182;</a></h3><p>These two settings can be used to make objects transparent by defining the amount of light <em>passed through</em> (<code>transmit</code>) or <em>absorbed by</em> (<code>filter</code>) an object. The following image (<a href="http://xahlee.info/3d/povray-glassy.html">source</a>] clearly shows the effect of each of these settings, with the following values 0, 0.33, 0.66 and 1: &lt;img src="<a href="http://xahlee.info/3d/i/texture_transparency.png">http://xahlee.info/3d/i/texture_transparency.png</a>" / &gt;</p>
+<ul>
+<li>The <font color='red'>red</font> <code>Spheres</code> are styled with increasing <code>transmit</code>
+<pre><code>  Sphere([0, 0, 0], 1, 
+         Pigment('color', [1, 0, 0]), 'transmit', 0.33),
+         Finish('phong', 0.8))</code></pre>
+</li>
+<li>The <font color='gold'>yellow</font> <code>Spheres</code> are styled with increasing <code>filter</code>
+<pre><code>  Sphere([0, 0, 0], 1, 
+         Pigment('color', [1, 1, 0]), 'filter', 0.33),
+         Finish('phong', 0.8))</code></pre>
+</li>
+<li>The <font color='green'>green</font> <code>Spheres</code> are styled with increasing <code>phong</code> setting (see section <code>2.2.1</code> below)
+<pre><code>  Sphere([0, 0, 0], 1, 
+         Pigment('color', [1, 1, 0]),
+         Finish('phong', 0.8))</code></pre>
+</li>
+</ul>
+<p>Of each color there are four <code>Spheres</code> shown and you can see that using <code>transmit</code> passes the light of the <code>LightSource</code> through (with a <code>transmit</code> value of <code>1</code> you can only see the reflection) where a <code>filter</code> value of <code>1</code> (4th yellow <code>Sphere</code>) keeps the <code>Spheres</code> color.</p>
+<h2 id="2.3-The-Interior-Style">2.3 The <code>Interior</code> Style<a class="anchor-link" href="#2.3-The-Interior-Style">&#182;</a></h2><h3 id="2.3.1-ior">2.3.1 <code>ior</code><a class="anchor-link" href="#2.3.1-ior">&#182;</a></h3><h2 id="2.4-The-Texture-Style">2.4 The <code>Texture</code> Style<a class="anchor-link" href="#2.4-The-Texture-Style">&#182;</a></h2><h1 id="3-Povray-Object-Modifiers">3 Povray Object Modifiers<a class="anchor-link" href="#3-Povray-Object-Modifiers">&#182;</a></h1><h2 id="3.1-The-scale-modifier">3.1 The <code>scale</code> modifier<a class="anchor-link" href="#3.1-The-scale-modifier">&#182;</a></h2><h2 id="3.2-The-rotate-modifier">3.2 The <code>rotate</code> modifier<a class="anchor-link" href="#3.2-The-rotate-modifier">&#182;</a></h2><h2 id="3.3-The-translate-modifier">3.3 The <code>translate</code> modifier<a class="anchor-link" href="#3.3-The-translate-modifier">&#182;</a></h2>
 </div>
 </div>
 </div>

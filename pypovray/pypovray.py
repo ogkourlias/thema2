@@ -19,10 +19,19 @@ from math import ceil
 def render_scene_to_png(frame, frame_id=0):
     """ Renders one or more frames given the `frame` function object and  a
     frame number (int, list or range) which is passed to the `frame` function """
-    folder = _create_tmp_folder()
+    tmp_folder = _create_tmp_folder()
+
     if isinstance(frame_id, int):
+        if frame_id < 0 or frame_id > eval(SETTINGS.NumberFrames):
+            logger.warning('["%s"] - Frame number(s) outside of range(0, %d)',
+                           sys._getframe().f_code.co_name, eval(SETTINGS.NumberFrames))
         _render_frame(frame(frame_id), frame_id)
+
     elif isinstance(frame_id, list) or isinstance(frame_id, range):
+        if min(frame_id) < 0 or max(frame_id) > eval(SETTINGS.NumberFrames):
+            logger.warning('["%s"] - Frame number(s) outside of range(0, %d)',
+                           sys._getframe().f_code.co_name, eval(SETTINGS.NumberFrames))
+
         for id in frame_id:
             _render_frame(frame(id), id)
     else:
@@ -31,10 +40,10 @@ def render_scene_to_png(frame, frame_id=0):
         return
 
     if SETTINGS.LogLevel != "DEBUG":
-        shutil.rmtree(folder)
+        shutil.rmtree(tmp_folder)
 
 
-def render_scene_to_gif(scene):
+def render_scene_to_gif(scene, frame_ids = []):
     """ Creates a GIF output 'movie' using moviepy.
     NOTE: a GIF file has reduced quality compared to the rendered output!
     """
@@ -50,7 +59,7 @@ def render_scene_to_gif(scene):
         return
 
     # Render the scenes (creates PNG images in the SETTINGS.OutputImageDir folder)
-    _render_scene(scene)
+    _render_scene(scene, frame_ids)
 
     # Get a list of all rendered images (these are ordered by default)
     image_files = glob('{}/{}_*.png'.format(SETTINGS.OutputImageDir, SETTINGS.OutputPrefix))
@@ -60,7 +69,7 @@ def render_scene_to_gif(scene):
                                                                            SETTINGS.OutputPrefix))
 
 
-def render_scene_to_mp4(scene):
+def render_scene_to_mp4(scene, frame_ids = []):
     """ Creates a high-quality MP4 movie using 'ffmpeg' """
 
     if _check_output_file_exists("mp4"):
@@ -74,32 +83,40 @@ def render_scene_to_mp4(scene):
         return
 
     # Render the scenes (creates PNG images in the SETTINGS.OutputImageDir folder)
-    _render_scene(scene)
+    _render_scene(scene, frame_ids)
 
     # Combine the frames into a movie
     _run_ffmpeg()
 
 
-def _render_scene(scene):
+def _render_scene(scene, frame_ids = []):
     """ Renders the scene to multiple output PNG files for use in animations """
 
     # Clear 'images' folder containing previously rendered frames
-    #_remove_folder_contents(SETTINGS.OutputImageDir)
+    _remove_folder_contents(SETTINGS.OutputImageDir)
 
     # Calculate the time per frame (i.e. evaluate expression from config file)
-    nframes = ceil(eval(SETTINGS.NumberFrames))
+    if frame_ids:
+        logger.debug('["%s"] - Specific frames given, rendering part of the simulation..',
+                     sys._getframe().f_code.co_name)
+        nframes = len(frame_ids)
+        id_list = frame_ids
+    else:
+        logger.debug('["%s"] - No specific frames given, rendering complete simulation..',
+                     sys._getframe().f_code.co_name)
+        nframes = ceil(eval(SETTINGS.NumberFrames))
+        frame_ids = range(nframes)
 
     # Render each scene using a thread pool or single-threaded
     if util.strtobool(SETTINGS.UsePool):
         scene_flist = [scene] * nframes
-        id_list = range(nframes)
 
         # Render each scene, using a thread pool
         with Pool(int(SETTINGS.workers)) as p:
             p.map(render_scene_to_png, scene_flist, id_list)
 
     else:
-        for frame_id in range(nframes):
+        for frame_id in frame_ids:
             render_scene_to_png(scene, frame_id)
 
 
@@ -120,6 +137,7 @@ def _remove_folder_contents(folder, match=None):
 
 def _render_frame(scene, frame_id):
     """ Renders a single frame """
+    #logger.debug("Step %d, in seconds: %f.", frame_id, frame_id / eval(SETTINGS.NumberFrames))
     frame_file = _create_frame_file_name(frame_id)
     scene.render(frame_file,
                  width=SETTINGS.ImageWidth,

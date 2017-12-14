@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>install_and_configure</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>pypovray_basic</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11775,146 +11775,12 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Installation">Installation<a class="anchor-link" href="#Installation">&#182;</a></h1><p>This short document describes how to get the required software (mainly, this Python package), configure it and run one of the included examples on the <em>Bioinformatics</em> computer network. At the bottom of the document is a section on how to do this on your own computer.</p>
-<h2 id="Getting-the-Python-package">Getting the Python package<a class="anchor-link" href="#Getting-the-Python-package">&#182;</a></h2><p>The <strong>pypovray</strong> package is available from the software <em>repository</em> Bitbucket at <a href="https://bitbucket.org/mkempenaar/pypovray">https://bitbucket.org/mkempenaar/pypovray</a>. This repository is used to store the software and track all the updates made to it. This means that as a user you can easily keep the package up to date or even propose changes and additions.</p>
-<p>The repository uses the <strong>Git</strong> software to synchronize changes between developer and the online version and it allows the user to download ('<em>clone</em>') the complete software.</p>
-<p>It is adviced to keep all work done for this project in a single folder, so lets create a new folder (maybe as a sub-folder of <code>~/Themas/Thema02</code> ?) where we will store the downloaded software:</p>
-
-<pre><code>mkdir project
-cd project
-
-</code></pre>
-<p>The following command will retrieve a full copy of the software package in the <code>project</code> folder named <strong>pypovray</strong>:</p>
-
-<pre><code>git clone https://bitbucket.org/mkempenaar/pypovray.git
-
-</code></pre>
-<p>This command will show something similar to:</p>
-
-<pre><code>Cloning into 'pypovray'...
-remote: Counting objects: 146, done.
-remote: Compressing objects: 100% (139/139), done.
-remote: Total 146 (delta 62), reused 0 (delta 0)
-Receiving objects: 100% (146/146), 31.65 MiB | 834.00 KiB/s, done.
-Resolving deltas: 100% (62/62), done.
-Checking connectivity... done.
-
-</code></pre>
-<p>indicating that we succesfully got everything we need. Next, move to the newly created <code>pypovray</code> folder and type:</p>
-
-<pre><code>git status
-
-</code></pre>
-<p>which will show if you have the latest version of the package. Of course, a freshly <em>cloned</em> project will always be up-to-date, but remember this command for the future. We will announce updates that you can download with:</p>
-
-<pre><code>git pull
-
-</code></pre>
-<h4 id="Downloading-Requirement(s)">Downloading Requirement(s)<a class="anchor-link" href="#Downloading-Requirement(s)">&#182;</a></h4><p>The <code>pypovray</code> folder contains <em>almost</em> everything we need, except for one Python package called <code>vapory</code>. Here is a <a href="http://zulko.github.io/blog/2014/11/13/things-you-can-do-with-python-and-pov-ray/">nice informative page</a> about this package and what you can (and partially will) do with it. To install this package, simply execute the <code>setup.sh</code> script:</p>
-
-<pre><code>sh setup.sh
-
-</code></pre>
-<p>Just for completeness, this will do another <code>git clone</code> of the Vapory package <a href="https://github.com/Zulko/vapory">from github</a> and add this to the <code>vapory/</code> folder in your project.</p>
-<h1 id="Configuring">Configuring<a class="anchor-link" href="#Configuring">&#182;</a></h1><p>There are a few basic settings we need to change before we are able to run the software. The Python package uses <em>initialization files</em> (<code>.ini</code>) to load a variety of settings using Python's <a href="https://docs.python.org/3/library/configparser.html"><code>configparser</code></a> library. There are two configuration files included with the project; <a href="https://bitbucket.org/mkempenaar/pypovray/raw/master/default.ini"><code>default.ini</code></a> and <a href="https://bitbucket.org/mkempenaar/pypovray/raw/master/prototype.ini"><code>prototype.ini</code></a>. Both files contain exactly the same options but with different values. The idea is that you can generally use the <code>prototype.ini</code> file which creates smaller output images and animations with lower quality to vastly increase rendering speed while the <code>default.ini</code> file creates high-quality output which can take a long time to render. Note that comment lines in these files begin with a semicolon '<code>;</code>'.</p>
-<p>Let's take a look at the first setting that we need to change by opening the <code>default.ini</code> file in an editor of your choice. Line <strong>3</strong> sets the <strong>AppLocation</strong> folder using the <em>absolute</em> (complete) path to your previously created <code>project</code> folder, i.e.: <code>/homes/user/Themas/Thema02/project</code> (do not add a trailing slash). Note that if you want to use the <code>prototype.ini</code> file, you need to change the setting too.</p>
-<p>Move on to the <em>Running an example</em> section below or read on for further details of the configuration file.</p>
-<h2 id="Sections">Sections<a class="anchor-link" href="#Sections">&#182;</a></h2><p>Both configuration files are split into three sections which are detailed below.</p>
-<h3 id="GENERAL">GENERAL<a class="anchor-link" href="#GENERAL">&#182;</a></h3><p>The general-settings section contains settings for paths:</p>
-<table>
-<thead><tr>
-<th style="text-align:center">Setting</th>
-<th style="text-align:center">Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">AppLocation</td>
-<td style="text-align:center">The absolute path to the software location; the folder where the repository is <em>cloned</em> or the ZIP file extracted</td>
-</tr>
-<tr>
-<td style="text-align:center">OutputPrefix</td>
-<td style="text-align:center">All output files (be it images located in the <code>OutputImageDir</code> or a created video in the <code>OutputMovieDir</code> folder) are named with this value as prefix. Default this is <code>simulation</code> which creates images like <code>simulation_000.png</code>, <code>simulation_001.png</code>, etc. and video files like <code>simulation.mp4</code> or <code>simulation.gif</code>.</td>
-</tr>
-<tr>
-<td style="text-align:center">OutputImageDir</td>
-<td style="text-align:center">All (intermediate) image files are placed in this folder. Note that the value references the <code>AppLocation</code> setting indicating a subfolder from where the project is located / cloned. Note that when creating a video as output, this folder <strong>will</strong> be emptied beforehand.</td>
-</tr>
-<tr>
-<td style="text-align:center">OutputMovieDir</td>
-<td style="text-align:center">All resulting video files are placed in this folder. Note that when creating an <strong>MP4</strong> output file, you will need to rename or remove the previous file since it will not be overwritten by default.</td>
-</tr>
-<tr>
-<td style="text-align:center">LogLevel</td>
-<td style="text-align:center">The level of information shown when running your application. Possible options are <code>DEBUG</code>, <code>INFO</code> (default), <code>WARNING</code>, <code>ERROR</code> and <code>CRITICAL</code>.</td>
-</tr>
-</tbody>
-</table>
-<h3 id="RENDER">RENDER<a class="anchor-link" href="#RENDER">&#182;</a></h3><p>Settings in this section control how the image (frame) is rendered:</p>
-<table>
-<thead><tr>
-<th style="text-align:center">Setting</th>
-<th style="text-align:center">Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">ImageWidth</td>
-<td style="text-align:center">The width in pixels of the resulting image</td>
-</tr>
-<tr>
-<td style="text-align:center">ImageHeight</td>
-<td style="text-align:center">The height in pixels of the resulting image</td>
-</tr>
-<tr>
-<td style="text-align:center">Quality</td>
-<td style="text-align:center">The quality of the resulting image. This is a <em>Povray</em> setting so please refer to the <a href="http://www.povray.org/documentation/view/3.6.1/223/">povray manual section 2.1.2.8.1</a> for details on how to choose an appropriate (integer) value.</td>
-</tr>
-<tr>
-<td style="text-align:center">AntiAlias</td>
-<td style="text-align:center">Another <em>Povray</em> setting controlling the amount of anti-aliasing to apply to the output image. The <a href="http://www.povray.org/documentation/view/3.6.1/223/">povray manual, section 2.1.2.8.4</a> describes the Anti-Aliasing feature in-depth, but this setting only controls the <code>Antialias_Threshold</code> setting which can be set to 3.0 (no anti-aliasing) or to any smaller number to enable anti-aliasing and control the amount of super-sampling. Practically, it is disable for prototyping and set to 0.01 for the final rendering.</td>
-</tr>
-<tr>
-<td style="text-align:center">UsePool</td>
-<td style="text-align:center">A boolean setting that can be used to force multi-threaded rendering. As this setting has some implications, see the <a href="http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/pypovray_simulation_2.ipynb">PyPovray Simulation - part 2</a> manual for further details.</td>
-</tr>
-<tr>
-<td style="text-align:center">Workers</td>
-<td style="text-align:center">The amount of <em>threads</em> to use in the pool, often set to the number of CPU-cores in the PC.. See the <em>UsePool</em> setting above.</td>
-</tr>
-</tbody>
-</table>
-<h3 id="SCENE">SCENE<a class="anchor-link" href="#SCENE">&#182;</a></h3><p>The settings in this section specify how the final movie is created:</p>
-<table>
-<thead><tr>
-<th style="text-align:center">Setting</th>
-<th style="text-align:center">Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Duration</td>
-<td style="text-align:center">The duration in seconds of the final output movie.</td>
-</tr>
-<tr>
-<td style="text-align:center">RenderFPS</td>
-<td style="text-align:center">The Frames Per Second (FPS) of the final output movie.</td>
-</tr>
-<tr>
-<td style="text-align:center">FrameTime</td>
-<td style="text-align:center">The time in seconds that each frame takes. If you have a scene taking 1 second (<code>Duration</code>) at 25 FPS (<code>RenderFPS</code>) each frame will take 1 /  25 = <strong>0.04</strong> seconds. The actual value of this setting in this case is actually <code>1 / 25</code> and can be converted in Python to 0.04 using <code>eval(FrameTime)</code>.</td>
-</tr>
-<tr>
-<td style="text-align:center">NumberFrames</td>
-<td style="text-align:center">Another pre-calculated value showing the total number of frames to render, use with <code>eval(NumberFrames)</code>.</td>
-</tr>
-<tr>
-<td style="text-align:center">MovieFPS</td>
-<td style="text-align:center">The <code>MovieFPS</code> is used by the <code>ffmpeg</code> software responsible for creating <em>MP4</em> movie files, independent of the <code>RenderFPS</code> setting.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="Using-the-Settings-in-Python">Using the Settings in Python<a class="anchor-link" href="#Using-the-Settings-in-Python">&#182;</a></h2><p>While not relevant for the installing and configuring subject, we briefly show how to actually use settings from the configuration file and how to switch configuration files in your own code. The following two lines of code shows how to import the settings and print a few of them:</p>
+<h1 id="Basic-PyPovray-Simulation-Example">Basic PyPovray Simulation Example<a class="anchor-link" href="#Basic-PyPovray-Simulation-Example">&#182;</a></h1><p>This document describes the most basic usage of the <strong>pypovray</strong> Python package that is provided for this course. This package is used to render (<em>draw</em>) objects and create animations/ simulations using the Povray ray-tracer (<a href="http://www.povray.org">http://www.povray.org</a>). Please briefly read the <a href="https://en.wikipedia.org/wiki/Ray_tracing_(graphics">Wikipedia</a> document for a basic understanding of ray-tracing as it describes the elements we need to create an image (i.e. a camera, lightsource, object).</p>
+<h2 id="Using-the-PyPovray-package">Using the <code>PyPovray</code> package<a class="anchor-link" href="#Using-the-PyPovray-package">&#182;</a></h2><p><!--
+The code included in this document requires a number of Python packages which are listed in the [requirements.txt](https://bitbucket.org/mkempenaar/pypovray/raw/master/requirements.txt) file available on the `pypovray` repository.
+This particular example only uses a few of those dependencies, the first one being the [`vapory`](https://github.com/Zulko/vapory) library.-->
+The goal of the package is providing a way of creating 'objects' to render in our scene (simulation later on) and to instruct the <code>Povray</code> program to actually render an image for us. This section describes two Python packages that we need to import; <code>vapory</code> for creating objects and <code>pypovray</code> for telling Povray what to do with our scene.</p>
+<p>Lets see how we use the <code>vapory</code> package to import the <code>Sphere</code> object for drawing a - you guessed it - <em>sphere</em>. The other import is a <code>Scene</code> object that can be described as a 'container' that we put all objects in to render (i.e. a camera, lightsources and for this example, a sphere).</p>
 
 </div>
 </div>
@@ -11924,32 +11790,33 @@ Checking connectivity... done.
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pypovray</span> <span class="k">import</span> <span class="n">SETTINGS</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Image resolution:&#39;</span><span class="p">,</span> <span class="n">SETTINGS</span><span class="o">.</span><span class="n">ImageWidth</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">SETTINGS</span><span class="o">.</span><span class="n">ImageHeight</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">SETTINGS</span><span class="o">.</span><span class="n">Duration</span> <span class="o">*</span> <span class="n">SETTINGS</span><span class="o">.</span><span class="n">RenderFPS</span><span class="p">,</span> <span class="s1">&#39; frames in total (&#39;</span><span class="p">,</span>
-      <span class="nb">eval</span><span class="p">(</span><span class="n">SETTINGS</span><span class="o">.</span><span class="n">FrameTime</span><span class="p">),</span> <span class="s1">&#39;s/frame)&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">vapory</span> <span class="k">import</span> <span class="n">Sphere</span><span class="p">,</span> <span class="n">Scene</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The next - and final - import is from the supplied <code>pypovray</code> package. This package is mainly used for loading and applying configurations for our render, choosing if we want a single image or many images for creating videos.</p>
+<p>First we import the <code>pypovray</code> and <code>models</code> <strong>modules</strong> from the <code>pypovray</code> <strong>package</strong> which are both single files containing a number of functions (in <code>pypovray</code>) and variables (in <code>models</code>) that will be explained thoughout this document.</p>
 
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Image resolution: 1600.0 x 1200.0
-120.0 frames in total (0.05s/frame)
-</pre>
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pypovray</span> <span class="k">import</span> <span class="n">pypovray</span><span class="p">,</span> <span class="n">models</span>
+</pre></div>
 
+</div>
 </div>
 </div>
 
@@ -11958,18 +11825,223 @@ Checking connectivity... done.
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This example shows that we need to import <code>SETTINGS</code> from the <code>pypovray</code> package. This object holds all defined settings and their values as so called <em><code>attributes</code></em>. To access a setting (i.e. get its <em>value</em>) we use the Python <a href="http://reeborg.ca/docs/oop_py_en/oop.html">dot notation</a> such as <code>SETTINGS.ImageWidth</code> which, when using the <code>default.ini</code> file gives us the value <code>1600.0</code> as demonstrated above.</p>
-<p>Actually, you can also just use <code>print(SETTINGS)</code> to print all loaded settings.</p>
+<p>You will notice that both <code>import</code> statements are not in the form of <code>import vapory</code> or <code>import pypovray</code> but instead they import only parts of the packages. Other examples will need to import other parts of the packages to perform more complex tasks.</p>
+<h2 id="Scene-Setup">Scene Setup<a class="anchor-link" href="#Scene-Setup">&#182;</a></h2><p>To create a basic scene to render (not yet a simulation!) we need to add a single function that will create a <em>frame</em>. This frame can then be rendered to an <em>image</em> and multiple frames can be combined into a <em>movie</em>.</p>
+<p>This basic idea is used in all examples; each frame is created seperately and if you want stitched into a movie (subject of another document).</p>
+<p>For our example we will create a function aptly called <em><code>frame</code></em>:</p>
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">frame</span><span class="p">(</span><span class="n">step</span><span class="p">):</span>
+    <span class="c1"># Create some objects to show</span>
+    <span class="c1"># ...</span>
+    <span class="c1"># Return a Scene() for rendering</span>
+    <span class="k">return</span> <span class="n">Scene</span><span class="p">(</span><span class="n">some_objects</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>One thing you might have noticed is that we do not actually <em>use</em> the sections that are defined in the configuration files. For us it does not matter where a setting is defined in these files, we can just use the dot notation to get its value. This does mean that setting names should be unique, otherwise only the last definition is used.</p>
-<p>To load a different configuration file in your script, use the following code:</p>
+<p>This function <a href="https://en.wikipedia.org/wiki/Method_stub">stub</a> which doesn't do anything yet, shows that it has one argument named <code>step</code> and returns an <em>instance</em> of the previously imported <code>Scene</code> object. Anything that we would like to have rendered should be given to this <code>Scene</code> object as demonstrated below.</p>
+<p>The <code>step</code> argument indicates where in the simulation we are, this can either be a timepoint in seconds (i.e. <code>1.45</code>) or an integer defining the frame number in a simulation (i.e. <code>30</code>). For now we won't do anything with it, it will be useful later when we want to actually create a movie of our simulation.</p>
+<p>The comments describe what we should put between the function definition and its <code>return</code> statement of which we will describe the <em>some_objects</em> next. The reason that our <code>frame</code> function ends with a <code>return Scene()</code> is that at that point we have a fully constructed frame that we need to hand of to a part of the <code>pypovray</code> package that will process our frame (create output). Just remember that every function you write that creates a frame should end with returning a <code>Scene</code> object.</p>
+<h3 id="Scene-Objects">Scene Objects<a class="anchor-link" href="#Scene-Objects">&#182;</a></h3><p>Let's first take a look at what we <strong>must</strong> give to the <code>Scene</code> object for each and every frame:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Scene</span><span class="p">(</span> <span class="n">models</span><span class="o">.</span><span class="n">default_camera</span><span class="p">,</span> <span class="n">objects</span><span class="o">=</span><span class="p">[</span><span class="n">models</span><span class="o">.</span><span class="n">default_light</span><span class="p">]</span> <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The statement above shows that we provide two arguments to the <code>Scene</code> object, a <a href="http://www.povray.org/documentation/view/3.7.0/246/"><code>camera</code></a> and a <em>lightsource</em>. These two arguments are required if we want to render anything, refer to online explaination of ray-tracing to see why (really, make sure you understand why we need those elements!).</p>
+<p>We specify the camera by using <code>models.default_camera</code> which is a predefined camera that you <em>can</em> use. Let's look at how this is defined in the <a href="https://bitbucket.org/mkempenaar/pypovray/raw/master/pypovray/models.py"><code>models</code></a> module of the <code>pypovray</code> package:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">default_camera</span> <span class="o">=</span> <span class="n">Camera</span><span class="p">(</span><span class="s1">&#39;location&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">26</span><span class="p">],</span> <span class="s1">&#39;look_at&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <code>default_camera</code> variable stores a <code>Camera</code> object (part of the <code>vapory</code> library) and gives some cryptic looking arguments namely two strings and two lists with three elements each. We will not discuss these arguments in depth, see the <a href="http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/povray_objects.ipynb">Povray Objects and Styling</a> manual for further details, however the first list ('location') <code>[0, 14, -28]</code> defines the <em>location</em> of the camera in our scene which functions as the viewer's eye and the second list ('look_at') <code>[0, 0, -3]</code> specifies the <em>direction</em> the camera is facing.</p>
+<p>Each of these lists - and you'll see more examples of these very soon - always consists of three values corresponding to <code>x</code>, <code>y</code> and <code>z</code> coordinates in our scene using the <a href="https://en.wikipedia.org/wiki/Cartesian_coordinate_system"><em>Cartesian coordinate system</em></a>.</p>
+<p>The second argument to the <code>Scene</code> object is in the form of <code>objects=[models.default_light]</code>; a <em>named argument</em> with <strong>objects</strong> as <strong>keyword</strong> and a <code>list</code> with an imported <em>light source</em> as <strong>value</strong>.</p>
+<p>The <em>light source</em> mentioned in the <code>objects=[]</code> is the other required element for a rendering as it provides the <em>rays</em> to trace and there is a predefined light available in the <code>models.py</code> module and is defined as follows:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">default_light</span> <span class="o">=</span> <span class="n">LightSource</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">20</span><span class="p">],</span> <span class="mf">0.8</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <code>vapory LightSource</code> object takes a large number of arguments to define its location, color, intensity, type (i.e. spotlight, area light, point light, etc.), fade distance, etc. but we only use a subset of these to define our 'default' light.</p>
+<p>Here we specify a location using a list where <code>x=2</code>, <code>y=8</code> and <code>z=-20</code> and the <em>intensity</em> or brightness which in this case is <code>0.8</code> times the default brightness. These are values which work for our demonstration but you can experiment with different values and types yourself (or, create your own <code>Camera</code> and <code>LightSource</code> objects!).</p>
+<p>With a camera and a light in our scene, we need some object for the rays to interact with, otherwise we won't see anything. Remember that we imported a <code>Sphere</code> object from the <code>vapory</code> library that we will now add to our scene:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sphere</span> <span class="o">=</span> <span class="n">Sphere</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">default_sphere_model</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Again, we pass some parameters to this object consisting of:</p>
+<ul>
+<li>a location given a list of x, y, z coordinates (<code>[5, 2, 0]</code>),</li>
+<li>an integer (<code>3</code>) defining the <code>Spheres</code> radius (half the diameter) and </li>
+<li>a <em>model</em> that we get from our <code>models</code> package. </li>
+</ul>
+<p>Again, all locations are defined by a three-element list with the <code>[</code><font color='red'>x</font><code>,</code> <font color='blue'>y</font><code>,</code> <font color='green'>z</font><code>]</code> coordinates. In this example a <code>Sphere</code> is placed at <font color='red'>x</font> <code>= 5</code>, <font color='blue'>y</font> <code>= 2</code> and <font color='green'>z</font> <code>= 0</code>. Working with coordinates is the most important concept for this document and will be exercised in the assignments below.</p>
+<p>Next, the integer <code>3</code> is the <em>radius</em> of the <code>Sphere</code> which gives a diameter of <code>6</code> units. Now, let's take a brief look at what the imported model is from the definition in the <code>models.py</code> file:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">default_sphere_model</span> <span class="o">=</span> <span class="n">Texture</span><span class="p">(</span><span class="n">Pigment</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span> <span class="s1">&#39;filter&#39;</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">),</span>
+                               <span class="n">Finish</span><span class="p">(</span><span class="s1">&#39;phong&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;reflection&#39;</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For now it is <strong>not</strong> important to understand <em>any</em> of this code as it will all be explained later and can be viewed for reference in the <a href="http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/povray_objects.ipynb">Povray Objects and Styling</a> manual. That is also the reason why this (and some other) <em>styles</em> can be imported for easy use. For completeness sake though here is a short description:</p>
+<blockquote><p>This <em>model</em> defines a <em>Texture</em> that can be applied to any object (i.e. a sphere, cylinder, box, etc.). A texture is used to change the look of such an object going further than just using a different color. For instance, here we first  define a color<strong>*</strong>, make it partly transparent (with the <code>filter</code> argument), a <a href="https://en.wikipedia.org/wiki/Phong_shading"><code>phong</code> highlighting</a> and the amount of light <code>reflection</code>.</p>
+<p><strong> * </strong>Colors are defined with a three-element list specifying the <a href="http://www.f-lohmueller.de/pov_tut/tex/tex_110e.htm"><code>rgb</code></a> (red, green, blue) colors where each number ranges from <code>0</code> to <code>1</code> where <code>1</code> means <code>100%</code>. In this example the sphere will be 90% ('0.9') red mixed with 5% ('0.05') green and blue.</p>
+</blockquote>
+<p>Lets look at the <code>scene</code> function now that we have some objects to render. Note that we added the <code>Sphere</code> object stored in the <code>sphere</code> variable to the <code>objects</code> list in the <code>return</code> statement.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">frame</span><span class="p">():</span>
+    <span class="c1"># Create some objects to show</span>
+    <span class="n">sphere</span> <span class="o">=</span> <span class="n">Sphere</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">default_sphere_model</span><span class="p">)</span>
+    
+    <span class="c1"># Return the scene for rendering</span>
+    <span class="k">return</span> <span class="n">Scene</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">default_camera</span><span class="p">,</span> 
+                 <span class="n">objects</span><span class="o">=</span><span class="p">[</span><span class="n">models</span><span class="o">.</span><span class="n">default_light</span><span class="p">,</span> <span class="n">sphere</span><span class="p">]</span> <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>With our scene now defined we can perform the actual <em>rendering</em> of our image with a call to the <code>render_scene_to_png()</code> function from the <code>pypovray</code> library, see below. We provide either one or two arguments to this function:</p>
+<ul>
+<li><em>Required</em>: the <em>function</em> <code>frame</code> and</li>
+<li><em>Optional (default = 0)</em>: an integer (i.e. <code>10</code>) which <em>can</em> be used to specify a frame number in an animation (we do not use it here, thus it defaults to <code>0</code>),</li>
+</ul>
+<p>While we can ignore frame number, the first argument might look a bit odd.. Here we give the <strong>name</strong> of our <code>frame</code> function as an argument which is <strong>not</strong> the output of our function, i.e. it is not executed here! While the details of this weird behaviour is out of the scope for now (remember <em>how</em> to use it, not what it <em>does</em> internally), we give a brief example of this funny Python code below.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Render as a single PNG image (stored in the images/ folder)</span>
+<span class="n">pypovray</span><span class="o">.</span><span class="n">render_scene_to_png</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here we define a function called <code>greet(message)</code> that always prints the given <code>message</code> and a function <code>evaluate(fun)</code> that wants a <code>function</code> <em>object</em> as argument and executes this! Again, this is purely informative and you are <em>not</em> expected to remember this.</p>
 
 </div>
 </div>
@@ -11979,11 +12051,14 @@ Checking connectivity... done.
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pypovray</span> <span class="k">import</span> <span class="n">load_config</span>
-<span class="c1"># Now we overwrite the settings by loading settings from a different file</span>
-<span class="n">SETTINGS</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s1">&#39;prototype.ini&#39;</span><span class="p">)</span>
-<span class="c1"># Print the changed resolution</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Image resolution:&#39;</span><span class="p">,</span> <span class="n">SETTINGS</span><span class="o">.</span><span class="n">ImageWidth</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">SETTINGS</span><span class="o">.</span><span class="n">ImageHeight</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">greet</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
+    <span class="n">fun</span><span class="p">(</span><span class="s1">&#39;Hi there!&#39;</span><span class="p">)</span>
+
+<span class="c1"># Call &#39;evaluate&#39; with </span>
+<span class="n">evaluate</span><span class="p">(</span><span class="n">greet</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12000,7 +12075,7 @@ Checking connectivity... done.
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Image resolution: 600.0 x 480.0
+<pre>Hi there!
 </pre>
 </div>
 </div>
@@ -12013,34 +12088,284 @@ Checking connectivity... done.
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This requires us to load another function from the <code>pypovray</code> package named <code>load_config</code> which takes the location of an <code>.ini</code> file. You can easily replace this '<em>hardcoded</em>' file name by a command-line argument so that you can dynamically switch when running your script.</p>
-<h2 id="Running-an-example">Running an example<a class="anchor-link" href="#Running-an-example">&#182;</a></h2><p>All other dependencies are already present on our internal network so there is no need to download any other software. If you look at the contents of your <code>pypovray</code> folder you will see a number of Python (<code>.py</code>) files. To run an example that creates a single image, type the following in the terminal:</p>
+<p>The declaration of the <code>frame</code> function is all you need to render a single sphere and looks like this when rendered: <img src="https://bitbucket.org/mkempenaar/pypovray/raw/master/manual/files/my_first_render.png" width=400></p>
+<p>While not very exciting, we did render an image with <strong>2</strong> lines of code importing the libraries and another <strong>2</strong> lines of code to create our scene (create a sphere object, place it at a coordinate (as you can see, it is not centered), style the sphere and  finally returning a <code>Scene</code> object). Adding more objects only requires one line defining the object and adding it to the <code>objects=[]</code> list in the return statement.</p>
+<p>Again, notice that we didn't do anything yet with the <code>step</code> argument of our frame function, while required, this will be part of another document where we will move our sphere in some direction.</p>
+<h3 id="Full-Example-Code">Full Example Code<a class="anchor-link" href="#Full-Example-Code">&#182;</a></h3><p>The script shown below is all you need to reproduce the image. Refer to the <a href="https://bitbucket.org/mkempenaar/pypovray/raw/master/default.ini"><code>default.ini</code></a> configuration file to see where the image is created and how it is named:</p>
 
-<pre><code>python3 atp_to_adp.py
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="kn">from</span> <span class="nn">pypovray</span> <span class="k">import</span> <span class="n">pypovray</span><span class="p">,</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">vapory</span> <span class="k">import</span> <span class="n">Sphere</span><span class="p">,</span> <span class="n">Scene</span>
+
+<span class="k">def</span> <span class="nf">frame</span><span class="p">(</span><span class="n">step</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Creates a sphere and places this in a scene &#39;&#39;&#39;</span>
+    <span class="n">sphere</span> <span class="o">=</span> <span class="n">Sphere</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">default_sphere_model</span><span class="p">)</span>
+
+    <span class="c1"># Return the Scene object for rendering</span>
+    <span class="k">return</span> <span class="n">Scene</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">default_camera</span><span class="p">,</span>
+                 <span class="n">objects</span><span class="o">=</span><span class="p">[</span><span class="n">models</span><span class="o">.</span><span class="n">default_light</span><span class="p">,</span> <span class="n">sphere</span><span class="p">])</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># Render as an image</span>
+    <span class="n">pypovray</span><span class="o">.</span><span class="n">render_scene_to_png</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Assignments">Assignments<a class="anchor-link" href="#Assignments">&#182;</a></h1><p>There are two assignments that will result in <strong>three</strong> Python scripts/ modules and at least <strong>two</strong> image files. To hand in these assignments, add these files into a <strong>ZIP</strong> or <strong>.tar.gz</strong> archive (do not use <code>.rar</code>, <code>.7z</code> or <code>.arj</code>!) and upload it to the <code>Deelopdracht Week 2</code> assesment on Blackboard.</p>
+<p><strong>NOTE:</strong> Prior to starting with any of the assignments, completely study the instructions above and make sure that everything is clear! If parts are unclear, try them out in an interactive Python environment such as IDLE.</p>
+<h2 id="1:-Recreate-the-following-scene">1: Recreate the following scene<a class="anchor-link" href="#1:-Recreate-the-following-scene">&#182;</a></h2><p>Use the example code above and add objects to recreate the following scene (read the comments below the image):</p>
+<p><img src="https://bitbucket.org/mkempenaar/pypovray/raw/master/manual/files/assignment1.png" width=700></p>
+<p>Note the following:</p>
+<ul>
+<li><p>Colors do not matter for this assignment</p>
+<ul>
+<li><p>However if you really want, changing colors and other properties of objects can be done by defining your own properties. For instance instead of using the <code>models.default_sphere_model</code> you could create a new <em>look</em> yourself and use that for some objects. Take a look at the <code>pypovray/models.py</code> file for examples. Define and use your own properties as shown below:</p>
+<p><code>my_model = Texture(Pigment('color', [0, 1, 1],), Finish('reflection', 0.4))
+Sphere([0, 0, 0], 3, my_model)</code></p>
+</li>
+</ul>
+</li>
+<li><p>Look at the <a href="http://nbviewer.jupyter.org/urls/bitbucket.org/mkempenaar/pypovray/raw/master/manual/pypovray_objects.ipynb">Povray Objects and Styling</a> manual to see which types of objects you can create and how to create these.</p>
+</li>
+<li>The scene lighting might need some adjustments since the <code>models.default_light</code> might not be sufficient. However, as long as all objects are visible it is sufficient for this assingment.</li>
+<li>You can be as creative as you'd like, adding more objects or increasing the complexity, rotating the scene etc. are all allowed as these are mainly exercises for working with the coordinate system and creating Povray objects.</li>
+</ul>
+<h2 id="2:-Povray-coordinate-system">2: Povray coordinate system<a class="anchor-link" href="#2:-Povray-coordinate-system">&#182;</a></h2><h3 id="2A:-Recreate-the-following-scene">2A: Recreate the following scene<a class="anchor-link" href="#2A:-Recreate-the-following-scene">&#182;</a></h3><p>Use the example code above and add objects to recreate the following scene:</p>
+<p><img src="https://bitbucket.org/mkempenaar/pypovray/raw/master/manual/files/assignment2a.png" width=600></p>
+<p>What you will draw here shows the direction where the <em>axis</em> points to in the Povray 3D-coordinate system where the <font color='red'>red</font> axis shows the <font color='red'>x-axis</font>, the <font color='blue'>blue</font> axis the <font color='blue'>y-axis</font> and the <font color='green'>green</font> axis the <font color='green'>z-axis</font>. For this assignment, set the <em>origin</em> (where the three axis intersect) at <code>x = -15</code> (to the left side) and both the <code>y</code> and <code>z</code> axes to <code>0</code>. The length of the lines should be set at <code>5</code> and the <em>arrows</em> have a length of <code>1</code> (total length is thus <code>5</code>).</p>
+<p>Povray uses a left-handed 3D-coordinate system which you can represent with your <em>left</em> hand as follows: <img src="https://bitbucket.org/mkempenaar/pypovray/raw/master/manual/files/lefthand_coordinate.jpg"></p>
+<p>The following text is taken from a Povray manual and might either confuse you further or make it more clear, read at your own risk:</p>
+<blockquote><p>"Now when you do your ray-tracer's aerobics, as explained in the section <a href="http://www.povray.org/documentation/view/3.6.1/15/">"Understanding POV-Ray's Coordinate System"</a>, you use your right hand to determine the direction of rotations.
+In a two dimensional grid, x is always to the right and y is up. The two versions of handedness arise from the question of whether z points into the screen or out of it and which axis in your computer model relates to up in the real world.</p>
+<p>Architectural CAD systems, like AutoCAD, tend to use the God's Eye orientation that the z-axis is the elevation and is the model's up direction. This approach makes sense if you are an architect looking at a building blueprint on a computer screen. z means up, and it increases towards you, with x and y still across and up the screen. This is the basic right handed system.</p>
+<p>Stand alone rendering systems, like POV-Ray, tend to consider you as a participant. You are looking at the screen as if you were a photographer standing in the scene. The up direction in the model is now y, the same as up in the real world and x is still to the right, so z must be depth, which increases away from you into the screen. This is the basic left handed system."*</p>
+</blockquote>
+<h3 id="2B:-Make-your-Legend-an-Importable-Module">2B: Make your Legend an <em>Importable Module</em><a class="anchor-link" href="#2B:-Make-your-Legend-an-Importable-Module">&#182;</a></h3><p>Adding this <em>legend</em> to other scenes can be useful when you're working with positioning objects. So for this assignment, we are going to make it <em>importable</em>, i.e. we would like to be able to do the following (the arguments given to <code>legend()</code> are explained below):</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">assignment2a</span> <span class="k">import</span> <span class="n">legend</span>
+
+<span class="k">def</span> <span class="nf">frame</span><span class="p">(</span><span class="n">step</span><span class="p">):</span>
+    <span class="c1"># ... some code creating objects ...</span>
+    <span class="c1"># Create our legend object</span>
+    <span class="n">xyz_legend</span> <span class="o">=</span> <span class="n">legend</span><span class="p">([</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="c1"># Return the scene for rendering, including a &#39;legend&#39;</span>
+    <span class="k">return</span> <span class="n">Scene</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">default_camera</span><span class="p">,</span> 
+                 <span class="n">objects</span><span class="o">=</span><span class="p">[</span><span class="n">models</span><span class="o">.</span><span class="n">default_light</span><span class="p">,</span> <span class="n">sphere</span><span class="p">]</span> <span class="o">+</span> <span class="n">xyz_legend</span> <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To do this, take your code that draws the <strong>Cylinders</strong> and the <strong>Cones</strong> that you used for <strong>2A</strong> and place it within the following template at the indicated places and use the pre-calculated coordinates given in this template. Save this file as <code>assignment2a.py</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">from</span> <span class="nn">vapory</span> <span class="k">import</span> <span class="n">Cylinder</span><span class="p">,</span> <span class="n">Cone</span><span class="p">,</span> <span class="n">Pigment</span><span class="p">,</span> <span class="n">Texture</span><span class="p">,</span> <span class="n">Finish</span>
+
+<span class="k">def</span> <span class="nf">legend</span><span class="p">(</span><span class="n">start_position</span><span class="p">,</span> <span class="n">axis_length</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Function docstring &#39;&#39;&#39;</span>
+
+    <span class="c1"># Reduce the AXIS_LENGTH by the length of the Cone (1) so that</span>
+    <span class="c1"># the total length is exactly the AXIS_LENGTH</span>
+    <span class="n">axis_length</span> <span class="o">-=</span> <span class="mi">1</span>
+    
+    <span class="c1"># Set the END position to the START + AXIS_LENGTH</span>
+    <span class="n">x_cylinder_end</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">start_position</span><span class="p">)</span>
+    <span class="n">y_cylinder_end</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">start_position</span><span class="p">)</span>
+    <span class="n">z_cylinder_end</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">start_position</span><span class="p">)</span>
+
+    <span class="c1"># Add the AXIS_LENGTHs to the corresponding coordinate</span>
+    <span class="n">x_cylinder_end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">axis_length</span>
+    <span class="n">y_cylinder_end</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">axis_length</span>
+    <span class="n">z_cylinder_end</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">axis_length</span>
+
+    <span class="sd">&#39;&#39;&#39; DRAW THE CYLINDERS &#39;&#39;&#39;</span>
+
+
+    <span class="c1"># Cone START is the same as the Cylinder END, so we COPY these lists</span>
+    <span class="n">x_cone_start</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">x_cylinder_end</span><span class="p">)</span>
+    <span class="n">y_cone_start</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">y_cylinder_end</span><span class="p">)</span>
+    <span class="n">z_cone_start</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">z_cylinder_end</span><span class="p">)</span>
+
+    <span class="c1"># COPY the Cone START coordinates</span>
+    <span class="n">x_cone_end</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">x_cone_start</span><span class="p">)</span>
+    <span class="n">y_cone_end</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">y_cone_start</span><span class="p">)</span>
+    <span class="n">z_cone_end</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">z_cone_start</span><span class="p">)</span>
+    
+    <span class="c1"># Set Cone END to the Cylinder END + 1</span>
+    <span class="n">x_cone_end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">y_cone_end</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">z_cone_end</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="sd">&#39;&#39;&#39; DRAW THE CONES &#39;&#39;&#39;</span>
+
+
+    <span class="c1"># Add ALL objects to a LIST and return</span>
+    <span class="n">legend</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_cylinder</span><span class="p">,</span> <span class="n">y_cylinder</span><span class="p">,</span> <span class="n">z_cylinder</span><span class="p">,</span> 
+              <span class="n">x_cone</span><span class="p">,</span> <span class="n">y_cone</span><span class="p">,</span> <span class="n">z_cone</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">legend</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This template contains a function called <code>legend</code> which takes two parameters. The <code>start_position</code> is a simple 3-element list with the <code>x</code>, <code>y</code> and <code>z</code> coordinates indicating where we want to place the legend. The <code>axis_length</code> parameter defines the <em>length</em> of the legend-lines. You can see in the code that we use these to calculate where each <code>Cylinder</code> and <code>Cone</code> starts and ends.</p>
+<p>Note though that we do a lot of <em>list-copying</em> using the <code>list()</code> function. We won't be going to explain that here, but consider (and try!) the following code example:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create a list</span>
+<span class="n">list_a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+<span class="c1"># Assign &#39;list_a&#39; to &#39;list_b&#39;</span>
+<span class="n">list_b</span> <span class="o">=</span> <span class="n">list_a</span>
+<span class="c1"># Add 10 to the second element in &#39;list_b&#39;</span>
+<span class="n">list_b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">10</span>
+<span class="c1"># Print both lists and be confused.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">list_a</span><span class="p">,</span> <span class="n">list_b</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[0, 20, 100] [0, 20, 100]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we can import the legend and show it in our other scenes by adding it to our <code>objects=[]</code> in the <code>Scene()</code> function call as shown before. Consider the following code example to understand why we do</p>
+
+<pre><code>Scene(..., objects=[light, sphere] + xyz_legend)
 
 </code></pre>
-<p>This will print a few lines of text to the screen depending on your <code>LogLevel</code> setting and it will take about 10 seconds in total to run. If everything went well, the script created output in the form of an image file named <code>simulation_000.png</code> located in the <code>images</code> folder: <img src="https://bitbucket.org/mkempenaar/pypovray/raw/master/manual/files/atp_to_adp.png" width=400></p>
-<h1 id="Clean-Installation">Clean Installation<a class="anchor-link" href="#Clean-Installation">&#182;</a></h1><p>This is a brief documentation on what is needed to run the software on a system other then those in the Bioinformatics network. How to actually install the requirements other then the Python packages is <strong><em>not</em></strong> given; refer to the documentation of these (free) software packages for specific installation instructions for your operating system.</p>
-<h2 id="Software-requirements">Software requirements<a class="anchor-link" href="#Software-requirements">&#182;</a></h2><p>The following software is required:</p>
-<ul>
-<li>Python3: On Windows, you could use <a href="https://www.continuum.io/anaconda-overview"><code>Anaconda</code></a> which includes Python and a number of packages you will need. For OS X or macOS you can also use this but using <a href="http://brew.sh"><code>homebrew</code></a> is advised (<code>brew install python3</code>)</li>
-<li>FFmpeg: Downloadable from <a href="http://ffmpeg.org">http://ffmpeg.org</a> for most operating systems. The <code>ffmpeg</code> command should be able to run in the terminal (<code>sudo apt-get install ffmpeg</code> on Debian/Ubuntu or <code>brew install ffmpeg</code> on macOS).</li>
-<li>Povray: The <a href="http://www.povray.org/download/">Povray</a> website offers downloads for Windows and <a href="http://www.povray.org/download/linux.php">linux</a>. However for Linux (Ubuntu, Debian) povray is available through the OS <em>package-manager</em>, i.e. <code>sudo apg-get install povray</code>. <code>homebrew</code> for OS X or macOS also includes a <code>povray</code> package installable with <code>brew install povray</code>.</li>
-</ul>
-<p>Besides above software, a number of Python packages is also required. Please read the excellent <em>how-to</em> on Python <a href="http://docs.python-guide.org/en/latest/dev/virtualenvs/"><em><code>Virtual Environments</code></em></a> before proceeding (the use of this technique is optional however). The required packages are listed in the <a href="https://bitbucket.org/mkempenaar/pypovray/raw/master/requirements.txt"><code>requirements.txt</code></a> file and the easiest method of installing all of them is by using the Python package manager <strong><code>pip</code></strong>:</p>
+<p>instead of</p>
 
-<pre><code>pip3 install -r requirements.txt
+<pre><code>Scene(..., objects=[light, sphere, xyz_legend)</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]</span>
+
+<span class="c1"># Append using a comma</span>
+<span class="n">objects</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="n">list_a</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Comma:&#39;</span><span class="p">,</span> <span class="n">objects</span><span class="p">)</span>
+
+<span class="c1"># Append by addition</span>
+<span class="n">objects</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">+</span> <span class="n">list_a</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Addition:&#39;</span><span class="p">,</span> <span class="n">objects</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Comma: [10, [100, 1000]]
+Addition: [10, 100, 1000]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Can you spot the difference?</p>
+<p>Now try to add your legend to your own scene created in assignment 1 to get something like the image below. With the legend in our view we can more easily position objects since we can see where all the axes are pointing at. For instance, we see that if we want to move everything closer to the camera we need to <strong>reduce</strong> the z-value since the axis points away from us (positive z). Remember that we called the <code>legend</code> function with</p>
+
+<pre><code>legend([-15, 0, 0], 5)
 
 </code></pre>
-<p>If you only have Python3 installed or when you are using a <em>virtual environment</em>, you can use <code>pip</code> instead of <code>pip3</code>. There are situations where this fails, installing each package separately might fix this. Install the following packages with <code>pip3 install &lt;package_name&gt;</code>, i.e. <code>pip3 install moviepy</code>:</p>
-<ul>
-<li><code>ffmpy</code></li>
-<li><code>moviepy</code></li>
-<li><code>numpy</code></li>
-<li><code>scipy</code></li>
-<li><code>pathos</code></li>
-</ul>
-<p>Once you have these requirements installed, you can proceed with the <em>Getting the Python package</em> section at the top of this page.</p>
+<p>so we know that all drawn axes have a length of <code>5</code> which also helps with scaling and positioning objects since Povray uses an arbitrary unit length (it's not defined as <em>pixels</em> or <em>centimeters</em> etc.).</p>
+<p><img src="https://bitbucket.org/mkempenaar/pypovray/raw/master/manual/files/assignment2b.png" width=700></p>
 
 </div>
 </div>
