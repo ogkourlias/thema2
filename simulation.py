@@ -8,14 +8,12 @@ To install the requirements (moviepy, ffmpy and vapory), use:
 
 import argparse
 import sys
-from math import sin, cos, pi, sqrt
-from pypovray import pypovray, SETTINGS
-from vapory.vapory import *
+from pypovray import pypovray, SETTINGS, load_config
+from vapory import Scene, LightSource, Camera, Sphere, Cylinder, Plane, Texture, Pigment, Finish, Interior, Difference
 
 # Scene Global Settings
 RADIUS = 10  # scene circle radius
-XCENTER = 0
-ZCENTER = 0
+
 # Scene Settings and Static Objects
 MAIN_LIGHT = LightSource([2, 4, -3], 3, 'fade_distance', 5,
                          'fade_power', 2, 'area_light', 3, 3, 12, 12,
@@ -27,27 +25,18 @@ BACK_LIGHT = LightSource([-8, 3, -1], 'color', [1, 0.8, 0, 4],
 CAMERA = Camera('location', [0, 10, -20], 'look_at', [0, 0, -3])
 GROUND = Plane([0, 1, 0], -4, Texture(Pigment('color', [1.5, 1, 1])))
 
-
-def _get_xz(step, steps):
-    """ Calculates the x- and z-positions given the position in a circle. """
-    x = XCENTER - sin(float(step) / steps * 2.0 * pi) * RADIUS
-    z = ZCENTER - cos(float(step) / steps * 2.0 * pi) * RADIUS
-    return x, z
-
-
 def sphere_circle():
     """ Creates a circle made up of 20 small spheres.
         A list of Sphere objects is returnded ready for rendering. """
     spheres = 20  # number of spheres to create
-    steps = 200  # number of steps in a circle
     ring = []
     ring_node_size = 0.6
     smodel = Texture(Pigment('color', [1, 0, 0], 'filter', 0.5),
                      Finish('phong', 0.8, 'reflection', 0.5))
-    for i in range(steps):
-        if i % int(steps / spheres) == 0:  # At every 1/8th place a sphere
-            x, z = _get_xz(i, steps)
-            ring.append(Sphere([x, 0, z], ring_node_size, smodel))
+    for i in range(spheres):
+        ring.append(Sphere([0, 0, 0], ring_node_size, smodel,
+                           'translate', [RADIUS, 0, 0],
+                           'rotate', [0, 360/spheres * i, 0]))
     return ring
 
 
@@ -55,52 +44,32 @@ def sphere_circle():
 RING = sphere_circle()
 
 
-def scene(step):
+def frame(step):
     """ Returns the scene at the given step  """
-    x, z = _get_xz(step, eval(SETTINGS.NumberFrames))
-
     ## Rotating sphere
     sphere_rad = 1.8
-    sphere = Sphere([x, 0, z], sphere_rad,
+    sphere = Sphere([0, 0, 0], sphere_rad,
                     Pigment('color', [0.9, 0.05, 0.05], 'filter', 0.7),
                     Interior('ior', 1), Finish('phong', 0.6, 'reflection', 0.4))
 
-    ## Intersecting cylinder slope
-    t_slope = 0 if x == 0 else (ZCENTER - z) / (XCENTER - x)
-    inv_slope = 0 if t_slope == 0 else -(1 / t_slope)
-
-    # Calculate x and y of cylinder end-points given length of side c (right triangle)
-    c = sphere_rad
-    # Length of sides a and b of the triangle
-    b = c / sqrt(inv_slope ** 2 + 1)
-    a = sqrt(abs(c ** 2 - b ** 2))
-
-    # Coordinates extending to the right of the 'spoke' end
-    r_x_end = x + b if z >= 0 else x - b
-    r_z_end = z - a if x >= 0 else z + a
-
-    # Coordinates extending to the left of the 'spoke' end
-    l_x_end = x - b if z >= 0 else x + b
-    l_z_end = z + a if x >= 0 else z - a
-
     # Intersecting cylinder object
-    rod = Cylinder([l_x_end, 0, l_z_end], [r_x_end, 0, r_z_end],
+    rod = Cylinder([0, 0, 3], [0, 0, -3],
                    1.0, 'open', Pigment('color', [1, 0, 0], 'filter', 0.8),
                    Interior('ior', 1), Finish('phong', 0, 'reflection', 0))
 
-    # 'Hollow out' the rotating sphere with the intersecting cylinder using the Difference
-    traveller = Difference(sphere, rod)
+    # 'Hollow out' the rotating sphere with the intersecting cylinder using the Difference,
+    # move to a spot on the circle (top) and rotate on the x-axis
+    traveller = Difference(sphere, rod, 'translate', [0, RADIUS, 0],
+                           'rotate', [0, 360/eval(SETTINGS.NumberFrames)*step*2, 0])
 
-    return Scene(CAMERA,
-                 objects=[GROUND, MAIN_LIGHT, BACK_LIGHT, traveller] + RING,
-                 included=["glass.inc", "colors.inc", "textures.inc"])
+    return Scene(CAMERA, objects=[GROUND, MAIN_LIGHT, BACK_LIGHT, traveller] + RING)
 
 
 def main(args):
     """ Runs the simulation """
     if args.time:
         # User entered the specific timepoint to render (in seconds)
-        pypovray.render_scene_to_png(scene, args.time)
+        pypovray.render_scene_to_png(frame, args.time)
     else:
         # No output file type and no specific time, exit
         if not args.gif and not args.mp4:
@@ -108,9 +77,9 @@ def main(args):
             sys.exit('\nPlease specify either a specific time point or output format for a movie file')
         # Render a movie, depending on output type selected (both files is possible)
         if args.gif:
-            pypovray.render_scene_to_gif(scene)
+            pypovray.render_scene_to_gif(frame)
         if args.mp4:
-            pypovray.render_scene_to_mp4(scene)
+            pypovray.render_scene_to_mp4(frame)
     return 0
 
 
