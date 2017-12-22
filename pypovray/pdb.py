@@ -221,9 +221,9 @@ class PDBMolecule(object):
 
         for i, atom in enumerate(self.atoms):
             # Default atom size (for undefined atoms) is 0.5
-            atom_radius = atom_sizes.get(atom.name, 0.5)
+            atom_radius = atom_sizes.get(atom.element, 0.5)
             if name:
-                label = atom.name
+                label = atom.element
                 letter_offset = np.array([0.15 * len(label), 0.13 * len(label), 0.0])
                 self.show_name = True
             else:
@@ -259,7 +259,7 @@ class PDBMolecule(object):
             # on the vector originating from the camera viewpoint to the atom center.
             # The scaling parameter scales (reduces) the text size
             text = Text('ttf', '"timrom.ttf"', '"{}"'.format(str(label)), 1, 0,
-                        'scale', [0.5, 0.5, 0.5], text_model,
+                        'scale', [0.35, 0.35, 0.35], text_model,
                         'rotate', [-x_angle, y_angle, 0], 'translate', N)
 
             # Create a sphere with the same position and dimensions as the atom
@@ -286,7 +286,7 @@ class PDBMolecule(object):
 
         for serial, atom in enumerate(self.atoms):
             # Declare a model that follows the atom's styling guidelines
-            stick_model_a = Texture(Pigment('color', atom_colors.get(atom.name, [0, 1, 1])),
+            stick_model_a = Texture(Pigment('color', atom_colors.get(atom.element, [0, 1, 1])),
                                     Finish('phong', 0.3, 'reflection', 0.1))
             # Iterate through all the atom's bonds
             for bond in atom.bonds:
@@ -296,7 +296,7 @@ class PDBMolecule(object):
                 if bond > serial:
                     bond_atom = self.atoms[bond]
                     # Declare a model that follows the bonded atom's styling guidelines
-                    stick_model_b = Texture(Pigment('color', atom_colors.get(bond_atom.name, [0, 1, 1])),
+                    stick_model_b = Texture(Pigment('color', atom_colors.get(bond_atom.element, [0, 1, 1])),
                                     Finish('phong', 0.3, 'reflection', 0.1))
 
                     # Declare a vector to place the cylinder on
@@ -356,7 +356,7 @@ class PDBMolecule(object):
 
         structure = []
         for idx, atm in enumerate(self.atoms):
-            structure.append('{}:\t\t{}\t\t{}\t{}\t{}\t'.format(idx, atm.element,
+            structure.append('{}:\t\t{}\t\t{}\t{}\t{}\t'.format(idx, atm.name,
                                                                 format(atm.x, '.2f'),
                                                                 format(atm.y, '.2f'),
                                                                 format(atm.z, '.2f')))
@@ -369,8 +369,8 @@ class PDBAtom(object):
         #this is what we need to parse
         #ATOM      1  CA  ORN     1       4.935   1.171   7.983  1.00  0.00      sega
         #XPLOR pdb files do not fully agree with the PDB conventions 
-        name = string[12:16].strip()
-        self.name = ''.join(re.findall('[0-9]*([A-Za-z]+)[0-9]*', name))
+        self.name = string[12:17].strip()
+        #self.name = ''.join(re.findall('[0-9]*([A-Za-z]+)[0-9]*', name))
         self.x = float(string[30:38].strip())
         self.y = float(string[38:46].strip())
         self.z = float(string[46:54].strip())

@@ -105,7 +105,7 @@ def _render_scene(scene, frame_ids = []):
         logger.debug('["%s"] - No specific frames given, rendering complete simulation..',
                      sys._getframe().f_code.co_name)
         nframes = ceil(eval(SETTINGS.NumberFrames))
-        frame_ids = range(nframes)
+        id_list = range(nframes)
 
     # Render each scene using a thread pool or single-threaded
     if util.strtobool(SETTINGS.UsePool):
@@ -116,7 +116,7 @@ def _render_scene(scene, frame_ids = []):
             p.map(render_scene_to_png, scene_flist, id_list)
 
     else:
-        for frame_id in frame_ids:
+        for frame_id in id_list:
             render_scene_to_png(scene, frame_id)
 
 
