@@ -1,6 +1,26 @@
 #!/usr/bin/env python
 
-from vapory.vapory import Cylinder, Cone, Pigment, Texture, Finish
+"""
+Assignment 2 Template script
+----------------------------
+
+This template contains a single function ('legend') that needs to be completed
+to make an importable legend for use in other programs.
+
+* Write the function docstring explaining what it does and its arguments
+* Fill in the two dictionaries ('cylinders' and 'cones')
+
+This function stores all objects to render in dictionaries, try to understand
+the code in this template:
+    * open an Idle or interactive Python session
+    * create a 'start_position' list with values [0, 10, 20]
+    * copy/ paste code from the template into IDle to see its effects
+    * print/ inspect contents of the 'cylinder_coords' and 'cones_coords_*' dictionaries
+    * experiment with any other unclear statements
+
+"""
+
+from vapory import Cylinder, Cone, Pigment, Texture, Finish
 
 
 def legend(start_position, axis_length):
@@ -10,38 +30,52 @@ def legend(start_position, axis_length):
     # the total length is exactly the AXIS_LENGTH
     axis_length -= 1
 
-    # Set the END position to the START + AXIS_LENGTH
-    x_cylinder_end = list(start_position)
-    y_cylinder_end = list(start_position)
-    z_cylinder_end = list(start_position)
+    # Initialize the Cylinder END-position to a COPY of the start position
+    cylinder_coords_end = {
+        'x': list(start_position),
+        'y': list(start_position),
+        'z': list(start_position)
+    }
 
     # Add the AXIS_LENGTHs to the corresponding coordinate
-    x_cylinder_end[0] += axis_length
-    y_cylinder_end[1] += axis_length
-    z_cylinder_end[2] += axis_length
+    cylinder_coords_end['x'][0] += axis_length
+    cylinder_coords_end['y'][1] += axis_length
+    cylinder_coords_end['z'][2] += axis_length
 
-    ''' DRAW THE CYLINDERS '''
+    ''' CREATE THE CYLINDERS'''
+    cylinders = {
+        'x': None,
+        'y': None,
+        'z': None
+    }
 
     # Cone START is the same as the Cylinder END, so we COPY these lists
-    x_cone_start = list(x_cylinder_end)
-    y_cone_start = list(y_cylinder_end)
-    z_cone_start = list(z_cylinder_end)
+    cones_coords_start = {
+        'x': list(cylinder_coords_end['x']),
+        'y': list(cylinder_coords_end['y']),
+        'z': list(cylinder_coords_end['z'])
+    }
 
-    # COPY the
-    x_cone_end = list(x_cone_start)
-    y_cone_end = list(y_cone_start)
-    z_cone_end = list(z_cone_start)
-    
-    # Cone END is the Cylinder END + 1
-    x_cone_end[0] += 1
-    y_cone_end[1] += 1
-    z_cone_end[2] += 1
+    # Copy the START as END coordinate
+    cones_coords_end = {
+        'x': list(cones_coords_start['x']),
+        'y': list(cones_coords_start['y']),
+        'z': list(cones_coords_start['z'])
+    }
 
-    ''' DRAW THE CONES '''
+    # Extend the tip of the cones with length 1
+    cones_coords_end['x'][0] += 1
+    cones_coords_end['y'][1] += 1
+    cones_coords_end['z'][2] += 1
+
+    ''' CREATE THE CONES '''
+    cones = {
+        'x': None,
+        'y': None,
+        'z': None
+    }
 
     # Add ALL objects to a LIST and return
-    legend = [x_cylinder, y_cylinder, z_cylinder, 
-              x_cone, y_cone, z_cone]
+    legend_objects = list(cylinders.values()) + list(cones.values())
 
-    return legend
-
+    return legend_objects
