@@ -3,17 +3,17 @@ This module offers functionality to render a frame or movie given a
 Vapory 'Scene' object.
 """
 
-import ffmpy
 import shutil
 import sys
 import os
-from pathos.multiprocessing import ProcessingPool as Pool
-from moviepy.editor import ImageSequenceClip
 from tempfile import mkdtemp
 from glob import glob
-from pypovray import SETTINGS, logger
 from distutils import util
 from math import ceil
+from moviepy.editor import ImageSequenceClip
+from pathos.multiprocessing import ProcessingPool as Pool
+import ffmpy
+from pypovray import SETTINGS, logger
 
 
 def render_scene_to_png(frame, frame_id=0):
@@ -27,7 +27,7 @@ def render_scene_to_png(frame, frame_id=0):
                            sys._getframe().f_code.co_name, eval(SETTINGS.NumberFrames))
         _render_frame(frame(frame_id), frame_id)
 
-    elif isinstance(frame_id, list) or isinstance(frame_id, range):
+    elif isinstance(frame_id, (list, range)):
         if min(frame_id) < 0 or max(frame_id) > eval(SETTINGS.NumberFrames):
             logger.warning('["%s"] - Frame number(s) outside of range(0, %d)',
                            sys._getframe().f_code.co_name, eval(SETTINGS.NumberFrames))
@@ -39,11 +39,12 @@ def render_scene_to_png(frame, frame_id=0):
                      sys._getframe().f_code.co_name)
         return
 
-    if SETTINGS.LogLevel != "DEBUG":
+    # Remove temporary files after rendering, if set
+    if SETTINGS.LogLevel != "DEBUG" or util.strtobool(SETTINGS.RemoveTempFiles):
         shutil.rmtree(tmp_folder)
 
 
-def render_scene_to_gif(scene, frame_ids = []):
+def render_scene_to_gif(scene, frame_ids=None):
     """ Creates a GIF output 'movie' using moviepy.
     NOTE: a GIF file has reduced quality compared to the rendered output!
     """
@@ -69,8 +70,8 @@ def render_scene_to_gif(scene, frame_ids = []):
                                                                            SETTINGS.OutputPrefix))
 
 
-def render_scene_to_mp4(scene, frame_ids = []):
-    """ Creates a high-quality MP4 movie using 'ffmpeg' """
+def render_scene_to_mp4(scene, frame_ids=None):
+    """ Creates an MP4 movie using 'ffmpeg' from n > 1 rendered images"""
 
     if _check_output_file_exists("mp4"):
         logger.error('["%s"] - Not simulating; output mp4 file already exists.',
@@ -89,7 +90,7 @@ def render_scene_to_mp4(scene, frame_ids = []):
     _run_ffmpeg()
 
 
-def _render_scene(scene, frame_ids = []):
+def _render_scene(scene, frame_ids=None):
     """ Renders the scene to multiple output PNG files for use in animations """
 
     # Clear 'images' folder containing previously rendered frames
@@ -143,7 +144,9 @@ def _render_frame(scene, frame_id):
                  width=SETTINGS.ImageWidth,
                  height=SETTINGS.ImageHeight,
                  antialiasing=SETTINGS.AntiAlias,
-                 quality=SETTINGS.Quality, remove_temp=False)
+                 show_window=util.strtobool(SETTINGS.ShowWindow),
+                 quality=SETTINGS.Quality,
+                 remove_temp=util.strtobool(SETTINGS.RemoveTempFiles))
 
 
 def _create_tmp_folder():
