@@ -3,7 +3,7 @@ Reads a configuration file containing settings for the package
 """
 import configparser
 
-class Config(object):
+class Config():
     """ Exposes all settings listed in a valid configuration file (*.ini) as
         object attributes. Use as Config.setting, i.e. Config.Quality """
 
@@ -22,8 +22,7 @@ class Config(object):
     def _parse_setting_value(self, setting_value):
         if self._is_boolean(setting_value):
             return True
-        else:
-            return self._converted_value(setting_value)
+        return self._converted_value(setting_value)
 
     def __str__(self):
         print(self.__dict__)
@@ -38,8 +37,7 @@ class Config(object):
     def _is_boolean(setting_value):
         if setting_value == "True":
             return True
-        elif setting_value == "False":
-            return False
+        return False
 
     @staticmethod
     def _converted_value(setting_value):
