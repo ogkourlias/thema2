@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Simple template rendering an ATP molecule originating from a PDB file,
+Simple example script for rendering an ATP molecule originating from a PDB file,
 splitting a phosphate (Pi) group resulting in ADP + Pi.
 
 Note: the resulting ADP molecule is not in a realistic conformation.
@@ -23,6 +23,7 @@ def scene_objects():
     """ Creates molecule objects and any other pre-calculated data """
     global ATP, FRONT_LIGHT
 
+    # Create a light source including some effects
     FRONT_LIGHT = LightSource([0, 5, -29], 'color', [1, 1, 1],
                               'fade_distance', 15, 'fade_power', 2,
                               'area_light', 3, 3, 12, 12,
@@ -49,7 +50,7 @@ def frame(step):
     phosphate.show_label(camera=models.floor_camera, name=True)
 
     # Return a 'Scene' object containing -all- objects to render, i.e. the camera,
-    # lights and in this case, two molecules with its labels.
+    # light(s) and in this case, two molecules with its labels.
     return Scene(models.floor_camera,
                  objects=[models.default_light, FRONT_LIGHT, models.checkered_ground] +
                  ATP.povray_molecule + phosphate.povray_molecule,
