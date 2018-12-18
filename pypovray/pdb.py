@@ -4,7 +4,6 @@ a PDB file.
 """
 
 import math
-import re
 import numpy as np
 from vapory.vapory import Sphere, Cylinder, Text, Pigment, Texture, Finish, Intersection
 from pypovray import SETTINGS, logger
@@ -152,7 +151,7 @@ class PDBMolecule(object):
             atom.z += offset[2]
 
         # Calculate the new center of mass
-        self.center = self._center_of_mass()
+        self.center += offset
 
         # Regenerate the molecule
         self.render_molecule()
@@ -307,7 +306,7 @@ class PDBMolecule(object):
 
                     stick_a = Cylinder(A, midpoint, scale / 3, stick_model_a)
                     stick_b = Cylinder(midpoint, B, scale / 3, stick_model_b)
-                    sticks.extend((stick_a,stick_b))
+                    sticks.extend((stick_a, stick_b))
 
         # Update the rendering
         self._update_render()
