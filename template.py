@@ -24,4 +24,3 @@ if __name__ == '__main__':
 
     # Render as a single image
     pypovray.render_scene_to_png(frame)
-    #dit is een test comment
