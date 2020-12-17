@@ -5,7 +5,7 @@ from vapory import Scene, Plane, Camera
 
 
 def objects():
-    ''' Creates molecules and contains other constants '''
+    """Creates molecules and contains other constants"""
 
 
 def frame(step):
