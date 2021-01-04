@@ -29,6 +29,16 @@ rna_polymerase_model = Texture(Pigment('color', [0.05, 0.63, 0.82], 'filter', 0.
 text_model           = Texture(Pigment('color', [0.8, 0.498039, 0.196078]),
                                Finish('phong', 0.6, 'reflection', 0.4))
 
+#Nucleotides
+default_g_model = Texture(Pigment('color', [1, 0, 0], 'filter', 0),
+                               Finish('phong', 0, 'reflection', 0))
+default_c_model = Texture(Pigment('color', [0, 0, 1], 'filter', 0),
+                               Finish('phong', 0, 'reflection', 0))
+default_a_model = Texture(Pigment('color', [1, 0.7, 0], 'filter', 0),
+                               Finish('phong', 0, 'reflection', 0))
+default_t_model = Texture(Pigment('color', [1, 1, 1], 'filter', 0),
+                               Finish('phong', 0, 'reflection', 0))
+
 # Static atom definitions
 # See the 'color.inc' povray file for more color examples and names.
 atom_colors = {
