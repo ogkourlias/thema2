@@ -1,4 +1,4 @@
-import webbrowser # <= to open the POVRay help
+]import webbrowser # <= to open the POVRay help
 from copy import deepcopy
 import re
 from .io import render_povstring
