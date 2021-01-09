@@ -3,12 +3,15 @@ import math
 from pypovray import pypovray, SETTINGS, models, pdb, logger
 from vapory import *
 
-from dna import sequence, nucleotide, pov, rna_synthesis
+from dna import sequence, nucleotide, rna_objects
 from rna_polymerase import rna_polymerase
 
-# Test sequence for now: ACTGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTTCGAGCTAGCTGATCGATCGATCGGGCTATATAAAGCT
+# Test sequence for now: TTTTAAAAGCCATAGGAATAGATACCGAAGTTATATCTATAAACAACTGACATTTAATAAATTGTATTCATAGCCTAATGTGATGAGCCACAGAAGCTTGCAAACTTTAATG
 
+count = 0
 def frame(step):
+
+    nucleotide_final, rna_sequence, pre_tata_distance = nucleotide(sequence)
 
     """ Returns the scene at step number (1 step per frame) """
     # Show some information about how far we are with rendering
@@ -18,19 +21,37 @@ def frame(step):
     # Getting the total number of frames, see the configuration file
     nframes = eval(SETTINGS.NumberFrames)
     # camera
-    camera_distance = 400
-    camera_speed = camera_distance / 80
+
     print(step)
-    camera = Camera('location', [camera_speed*step, 40, -80], 'look_at', [camera_speed*step, 0, 0])
-    polymerase = rna_polymerase([camera_speed*step, 0, 0], 12)
+
+    if step < 80:
+        camera_distance = pre_tata_distance
+        camera_speed = camera_distance / 80
+        cam_x = camera_speed*step
+        camera = Camera('location', [cam_x, 40, -80], 'look_at', [camera_speed*step, 0, 0])
+        polymerase = rna_polymerase([cam_x, 0, 0], 12)
+        transition_top, transition_bot, stretch_bot, stretch_top = rna_objects(rna_sequence, pre_tata_distance)
+    elif step >= 80 and step <= 160:
+        cam_x = pre_tata_distance
+        camera = Camera('location', [cam_x, 40, -80], 'look_at', [cam_x, 0, 0])
+        polymerase = rna_polymerase([cam_x, 0, 0], 12)
+        transition_top, transition_bot, stretch_bot, stretch_top = rna_objects(rna_sequence, pre_tata_distance)
+    else:
+        count =+ 1
+        cam_x = pre_tata_distance
+        polymerase = rna_polymerase([cam_x, 0, 0], 12)
+        camera = Camera('location', [cam_x, 40, -80], 'look_at', [cam_x, 0, 0])
+        transition_top, transition_bot, stretch_bot, stretch_top = rna_objects(rna_sequence, pre_tata_distance, 1*count)
+
+
+
+    # transition_top, transition_bot, stretch_bot, stretch_top = rna_objects(rna_sequence, pre_tata_distance)
 
     return Scene(camera,
-                 objects=[models.default_light, polymerase, nucleotide_final])
+                 objects=[models.default_light, polymerase, nucleotide_final, transition_bot, transition_top, stretch_bot, stretch_top])
 
 
 if __name__ == '__main__':
 
-    nucleotide_final, rna_sequence = nucleotide(sequence)
-    rna_string = rna_synthesis(sequence)
     # Render as a single image
     pypovray.render_scene_to_mp4(frame)

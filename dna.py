@@ -16,6 +16,7 @@ def nucleotide(sequence):
     nucleotide_distance = 0
     top = Cylinder([-10, 8, 0], [(len(pre_tata) * 9), 8, 0], 3, models.default_dna_model)
     bot = Cylinder([-10, -8, 0], [(len(pre_tata) * 9), -8, 0], 3, models.default_dna_model)
+    pre_tata_distance = (len(pre_tata)*9)
     nucleotide1 = Merge(top, bot)
     rna_sequence = ""
 
@@ -44,32 +45,25 @@ def nucleotide(sequence):
             nucleotide1 = Merge(nucleotide1, nucleotidetop, nucleotidebot)
             rna_sequence += "U"
 
-        print(pre_tata , "followed by", post_tata)
+
         nucleotide_distance += 9
 
+    print(pre_tata, "followed by", post_tata)
 
-    return [nucleotide1, rna_sequence]
+    return [nucleotide1, post_tata, pre_tata_distance]
 
-def rna_synthesis(sequence):
+def rna_objects(post_tata, cam_x, stretch_rate = 0):
     nucleotide_distance = 0
-    top = Cylinder([-10, 8, 0], [(len(sequence) * 9), 8, 0], 3, models.default_dna_model)
-    rna_string = top
-    for letter in sequence:
-        if letter == "C":
-            nucleotidetop = Cylinder([nucleotide_distance, 6, 0], [nucleotide_distance, 0, 0], 3, models.default_c_model)
-            rna_string = Merge(top, nucleotidetop)
-        elif letter == "G":
-            nucleotidetop = Cylinder([nucleotide_distance, 6, 0], [nucleotide_distance, 0, 0], 3, models.default_c_model)
-            rna_string = Merge(top, nucleotidetop)
-        elif letter == "A":
-            nucleotidetop = Cylinder([nucleotide_distance, 6, 0], [nucleotide_distance, 0, 0], 3, models.default_c_model)
-            rna_string = Merge(top, nucleotidetop)
-        elif letter == "U":
-            nucleotidetop = Cylinder([nucleotide_distance, 6, 0], [nucleotide_distance, 0, 0], 3, models.default_c_model)
-            rna_string = Merge(top, nucleotidetop)
-        nucleotide_distance += 9
+    transition_top = Cylinder([cam_x + 20, 8, 0], [(len(post_tata) * 9), 8, 0], 3, models.default_dna_model)
+    transition_bot = Cylinder([cam_x + 20, -8, 0], [(len(post_tata) * 9), -8, 0], 3, models.default_dna_model)
 
-    return [rna_string]
+    stretch_positive = 8
+    stretch_negative = -8
+
+    stretch_top = Cylinder([cam_x, stretch_positive, 0], [cam_x + 20, stretch_positive + stretch_rate, 0], 3, models.default_dna_model)
+    stretch_bot = Cylinder([cam_x, stretch_negative, 0], [cam_x + 20, stretch_negative - stretch_rate, 0], 3, models.default_t_model)
+
+    return [transition_top, transition_bot, stretch_top, stretch_bot]
 
 def frame(step):
     # Return the Scene object for rendering
