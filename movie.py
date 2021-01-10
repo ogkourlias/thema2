@@ -8,10 +8,9 @@ from rna_polymerase import rna_polymerase
 
 # Test sequence for now: TTTTAAAAGCCATAGGAATAGATACCGAAGTTATATCTATAAACAACTGACATTTAATAAATTGTATTCATAGCCTAATGTGATGAGCCACAGAAGCTTGCAAACTTTAATG
 
-count = 0
 def frame(step):
 
-    nucleotide_final, rna_sequence, pre_tata_distance = nucleotide(sequence)
+    nucleotide_final, rna_sequence, pre_tata_distance, nucleotide_distance = nucleotide(sequence)
 
     """ Returns the scene at step number (1 step per frame) """
     # Show some information about how far we are with rendering
@@ -30,25 +29,25 @@ def frame(step):
         cam_x = camera_speed*step
         camera = Camera('location', [cam_x, 40, -80], 'look_at', [camera_speed*step, 0, 0])
         polymerase = rna_polymerase([cam_x, 0, 0], 12)
-        transition_top, transition_bot, stretch_bot, stretch_top = rna_objects(rna_sequence, pre_tata_distance)
-    elif step >= 80 and step <= 160:
+        transition_top, transition_bot, stretch_bot, stretch_top, nucleotide_top_stretched, nucleotide_bot_stretched = rna_objects(rna_sequence, pre_tata_distance, nucleotide_distance)
+    elif step >= 80 and step < 160:
         cam_x = pre_tata_distance
         camera = Camera('location', [cam_x, 40, -80], 'look_at', [cam_x, 0, 0])
         polymerase = rna_polymerase([cam_x, 0, 0], 12)
-        transition_top, transition_bot, stretch_bot, stretch_top = rna_objects(rna_sequence, pre_tata_distance)
-    else:
-        count =+ 1
+        transition_top, transition_bot, stretch_bot, stretch_top, nucleotide_top_stretched, nucleotide_bot_stretched = rna_objects(rna_sequence, pre_tata_distance, nucleotide_distance)
+    else: #elif step >= 160 and step < 240:
         cam_x = pre_tata_distance
         polymerase = rna_polymerase([cam_x, 0, 0], 12)
         camera = Camera('location', [cam_x, 40, -80], 'look_at', [cam_x, 0, 0])
-        transition_top, transition_bot, stretch_bot, stretch_top = rna_objects(rna_sequence, pre_tata_distance, 1*count)
-
+        stretch_speed = ((step - 159) * (12/4))
+        print(stretch_speed)
+        transition_top, transition_bot, stretch_bot, stretch_top, nucleotide_top_stretched, nucleotide_bot_stretched = rna_objects(rna_sequence, pre_tata_distance, nucleotide_distance, stretch_speed)
 
 
     # transition_top, transition_bot, stretch_bot, stretch_top = rna_objects(rna_sequence, pre_tata_distance)
 
     return Scene(camera,
-                 objects=[models.default_light, polymerase, nucleotide_final, transition_bot, transition_top, stretch_bot, stretch_top])
+                 objects=[models.default_light, polymerase, nucleotide_final, transition_bot, transition_top, stretch_bot, stretch_top, nucleotide_top_stretched, nucleotide_bot_stretched])
 
 
 if __name__ == '__main__':
