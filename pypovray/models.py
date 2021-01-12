@@ -40,6 +40,8 @@ default_a_model = Texture(Pigment('color', [1, 0.7, 0], 'filter', 0),
                                Finish('phong', 0, 'reflection', 0))
 default_t_model = Texture(Pigment('color', [1, 1, 1], 'filter', 0),
                                Finish('phong', 0, 'reflection', 0))
+default_u_model = Texture(Pigment('color', [0, 1, 1], 'filter', 0),
+                               Finish('phong', 0, 'reflection', 0))
 
 # Static atom definitions
 # See the 'color.inc' povray file for more color examples and names.

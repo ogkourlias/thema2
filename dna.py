@@ -61,7 +61,7 @@ def rna_objects(post_tata, cam_x, nucleotide_distance, stretch_rate = 0):
     post_tata_distance = len(post_tata) * 9
 
     stretch_top = Cylinder([cam_x, stretch_positive, 0], [cam_x + 20, stretch_positive + stretch_rate, 0], 3, models.default_dna_model)
-    stretch_bot = Cylinder([cam_x, stretch_negative, 0], [cam_x + 20, stretch_negative - stretch_rate, 0], 3, models.default_t_model)
+    stretch_bot = Cylinder([cam_x, stretch_negative, 0], [cam_x + 20, stretch_negative - stretch_rate, 0], 3, models.default_dna_model)
 
     nucleotide_top_stretched = Sphere([2, 5.5, 0], 2, models.default_c_model)
     nucleotide_bot_stretched = Sphere([2, 5.5, 0], 2, models.default_dna_model)
@@ -94,12 +94,19 @@ def rna_objects(post_tata, cam_x, nucleotide_distance, stretch_rate = 0):
     return [transition_top, transition_bot, stretch_top, stretch_bot, nucleotide_top_stretched, nucleotide_bot_stretched, post_tata_distance]
 
 def synthesis(post_tata, count, new_all, pre_tata_distance):
-    letter = post_tata[count]
-    count += 1
-    for number in range(count):
+    for number in range(count + 1):
         x_all = pre_tata_distance + number * 9
-        new_top = Cylinder([x_all, -6, 0], [x_all, -12, 0], 3, models.default_c_model)
-        new_all = Merge(new_top, new_all)
+        if post_tata[number] == "C":
+            model = models.default_c_model
+        elif post_tata[number] == "G":
+            model = models.default_g_model
+        elif post_tata[number] == "A":
+            model = models.default_a_model
+        elif post_tata[number] == "T":
+            model = models.default_u_model
+        new_top_roof = Cylinder([x_all - 5, -6, 0], [x_all + 5, -6, 0], 3, models.default_dna_model)
+        new_top = Cylinder([x_all, -6, 0], [x_all, -12, 0], 3, model)
+        new_all = Merge(new_top, new_all, new_top_roof)
 
     return new_all
 
