@@ -63,8 +63,8 @@ def rna_objects(post_tata, cam_x, nucleotide_distance, stretch_rate = 0):
     stretch_top = Cylinder([cam_x, stretch_positive, 0], [cam_x + 20, stretch_positive + stretch_rate, 0], 3, models.default_dna_model)
     stretch_bot = Cylinder([cam_x, stretch_negative, 0], [cam_x + 20, stretch_negative - stretch_rate, 0], 3, models.default_t_model)
 
-    nucleotide_top_stretched = Sphere([2, 5.5, -2], 2, models.default_c_model)
-    nucleotide_bot_stretched = Sphere([2, 5.5, -2], 2, models.default_dna_model)
+    nucleotide_top_stretched = Sphere([2, 5.5, 0], 2, models.default_c_model)
+    nucleotide_bot_stretched = Sphere([2, 5.5, 0], 2, models.default_dna_model)
 
     for letter in post_tata:
 
@@ -90,11 +90,18 @@ def rna_objects(post_tata, cam_x, nucleotide_distance, stretch_rate = 0):
             nucleotide_bot_stretched = Merge(nucleotide_bot_stretched, nucleotidebot)
 
         nucleotide_distance += 9
+        # print(stretch_negative_nucleotide, stretch_rate)
     return [transition_top, transition_bot, stretch_top, stretch_bot, nucleotide_top_stretched, nucleotide_bot_stretched, post_tata_distance]
 
-def synthesis(post_tata, cam_x, nucleotide_distance):
+def synthesis(post_tata, count, new_all, pre_tata_distance):
+    letter = post_tata[count]
+    count += 1
+    for number in range(count):
+        x_all = pre_tata_distance + number * 9
+        new_top = Cylinder([x_all, -6, 0], [x_all, -12, 0], 3, models.default_c_model)
+        new_all = Merge(new_top, new_all)
 
-    return []
+    return new_all
 
 
 
