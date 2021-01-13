@@ -1,4 +1,11 @@
-#!/usr/bin/env python3
+# !/usr/bin/env python3
+
+"""
+description of the program
+"""
+
+__author__ = "my name"
+
 import math
 from pypovray import pypovray, SETTINGS, models, pdb, logger
 from vapory import *
@@ -20,7 +27,6 @@ def frame(step):
     nframes = eval(SETTINGS.NumberFrames)
     # camera
     new_all = Sphere([2, 5.5, 0], 2, models.default_c_model)
-    print(step)
     if step < (0.2*nframes):
         camera_distance = pre_tata_distance
         camera_speed = camera_distance / 80
@@ -35,24 +41,23 @@ def frame(step):
         transition_top, transition_bot, stretch_bot, stretch_top, nucleotide_top_stretched, nucleotide_bot_stretched, post_tata_distance = rna_objects(post_tata_sequence, pre_tata_distance, nucleotide_distance)
     elif step >= (0.4*nframes) and step < (0.6*nframes):
         cam_x = pre_tata_distance
-        polymerase = rna_polymerase([cam_x, 0, 0], 12)
+        poly_y = (step - 0.4*nframes) * (-15/(0.2*nframes))
+        polymerase = rna_polymerase([cam_x, poly_y, 0], 12)
         camera = Camera('location', [cam_x, 40, -80], 'look_at', [cam_x, 0, 0])
         stretch_speed = ((step - 159) * (12/80))
-        print(stretch_speed)
         transition_top, transition_bot, stretch_bot, stretch_top, nucleotide_top_stretched, nucleotide_bot_stretched, post_tata_distance = rna_objects(post_tata_sequence, pre_tata_distance, nucleotide_distance, stretch_speed)
     else:
         stretch_speed = (80 * (12/80))
         transition_top, transition_bot, stretch_bot, stretch_top, nucleotide_top_stretched, nucleotide_bot_stretched, post_tata_distance = rna_objects(post_tata_sequence, pre_tata_distance, nucleotide_distance, stretch_speed)
         post_tata_x = pre_tata_distance + (step - 0.6*nframes) * (post_tata_distance / (nframes*0.4))
         count = int((post_tata_x - pre_tata_distance) // 9)
-        print(count)
         new_all = Merge(synthesis(post_tata_sequence, count, new_all, pre_tata_distance), new_all)
-        polymerase = rna_polymerase([post_tata_x, 0, 0], 12)
+        polymerase = rna_polymerase([post_tata_x, -15, 0], 12)
         camera = Camera('location', [post_tata_x, 40, -80], 'look_at', [post_tata_x, 0, 0])
-        print(stretch_speed)
+        cam_x = post_tata_x
 
     return Scene(camera,
-                 objects=[models.default_light, polymerase, nucleotide_final, transition_bot, transition_top, stretch_bot, stretch_top, nucleotide_top_stretched, nucleotide_bot_stretched, new_all])
+                 objects=[LightSource([cam_x, 8, -20], 0.8), polymerase, nucleotide_final, transition_bot, transition_top, stretch_bot, stretch_top, nucleotide_top_stretched, nucleotide_bot_stretched, new_all])
 
 
 if __name__ == '__main__':
