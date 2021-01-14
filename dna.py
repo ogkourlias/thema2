@@ -19,9 +19,11 @@ sequence_file = open(sys.argv[1])
 sequence = ""
 
 for line in sequence_file:
-    line = line.rstrip()
-    for letter in line:
-        sequence += letter
+    if ">" not in line:
+        line = line.rstrip()
+        for letter in line:
+            sequence += letter
+
 
 pov = Camera('location', [0, 20, -200], 'look_at', [0, 2, -5])
 
@@ -98,8 +100,8 @@ def rna_objects(post_tata, cam_x, nucleotide_distance, stretch_rate=0):
                             0], 3,
                            models.default_dna_model)
 
-    nucleotide_top_stretched = Sphere([2, 5.5, 0], 2, models.default_c_model)
-    nucleotide_bot_stretched = Sphere([2, 5.5, 0], 2, models.default_dna_model)
+    nucleotide_top_stretched = Sphere([0, 5.5, 0], 2, models.default_c_model)
+    nucleotide_bot_stretched = Sphere([0, 5.5, 0], 2, models.default_dna_model)
 
     for letter in post_tata:
 
